@@ -52,7 +52,7 @@ export default function MeritBasePage() {
 
   // Read user profile
   const { data: userProfile, refetch: refetchProfile } = useScaffoldReadContract({
-    contractName: "MeritBase",
+    contractName: "MeritBaseCV",
     functionName: "getUserProfile",
     args: [address] as const,
   });
