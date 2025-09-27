@@ -1,80 +1,173 @@
-# 🏗 Scaffold-ETH 2
+# MeritBase - Decentralized Identity Wallet for On-Chain CV
 
-<h4 align="center">
-  <a href="https://docs.scaffoldeth.io">Documentation</a> |
-  <a href="https://scaffoldeth.io">Website</a>
-</h4>
+MeritBase is a Scaffold-ETH 2 dApp prototype that enables users to build verifiable professional profiles and receive attestation stamps (NFT badges) for completed work. It provides a portable reputation layer with QR code sharing and a mobile-friendly interface.
 
-🧪 An open-source, up-to-date toolkit for building decentralized applications (dapps) on the Ethereum blockchain. It's designed to make it easier for developers to create and deploy smart contracts and build user interfaces that interact with those contracts.
+## Features
 
-⚙️ Built using NextJS, RainbowKit, Hardhat, Wagmi, Viem, and Typescript.
+### 🏗️ Smart Contract Features
+- **User Profile Management**: Create and update professional profiles with name, pseudonym, skills, and work categories
+- **Job Stamp System**: Clients can issue verifiable NFT badges for completed work
+- **Rating System**: 1-5 star rating system for job quality assessment
+- **Verification**: Admin-verified stamps for enhanced credibility
+- **Statistics**: Track total stamps, average ratings, and profile metrics
 
-- ✅ **Contract Hot Reload**: Your frontend auto-adapts to your smart contract as you edit it.
-- 🪝 **[Custom hooks](https://docs.scaffoldeth.io/hooks/)**: Collection of React hooks wrapper around [wagmi](https://wagmi.sh/) to simplify interactions with smart contracts with typescript autocompletion.
-- 🧱 [**Components**](https://docs.scaffoldeth.io/components/): Collection of common web3 components to quickly build your frontend.
-- 🔥 **Burner Wallet & Local Faucet**: Quickly test your application with a burner wallet and local faucet.
-- 🔐 **Integration with Wallet Providers**: Connect to different wallet providers and interact with the Ethereum network.
+### 🎨 Frontend Features
+- **Mobile-Friendly UI**: Responsive design optimized for mobile devices
+- **Profile Management**: Easy profile creation and editing
+- **QR Code Sharing**: Generate QR codes for portable reputation sharing
+- **Job Stamp Display**: Beautiful cards showing verified work history
+- **Public Profiles**: Shareable profile pages for external verification
+- **Real-time Updates**: Live data from blockchain contracts
 
-![Debug Contracts tab](https://github.com/scaffold-eth/scaffold-eth-2/assets/55535804/b237af0c-5027-4849-a5c1-2e31495cccb1)
+## Smart Contract Architecture
 
-## Requirements
+### MeritBase Contract
+The main contract (`MeritBase.sol`) inherits from OpenZeppelin's ERC721, ERC721URIStorage, and Ownable contracts.
 
-Before you begin, you need to install the following tools:
+**Key Structs:**
+```solidity
+struct UserProfile {
+    string name;
+    string pseudonym;
+    string[] skills;
+    string[] workCategories;
+    bool isActive;
+    uint256 createdAt;
+    uint256 lastUpdated;
+}
 
-- [Node (>= v20.18.3)](https://nodejs.org/en/download/)
-- Yarn ([v1](https://classic.yarnpkg.com/en/docs/install/) or [v2+](https://yarnpkg.com/getting-started/install))
-- [Git](https://git-scm.com/downloads)
-
-## Quickstart
-
-To get started with Scaffold-ETH 2, follow the steps below:
-
-1. Install dependencies if it was skipped in CLI:
-
-```
-cd my-dapp-example
-yarn install
-```
-
-2. Run a local network in the first terminal:
-
-```
-yarn chain
-```
-
-This command starts a local Ethereum network using Hardhat. The network runs on your local machine and can be used for testing and development. You can customize the network configuration in `packages/hardhat/hardhat.config.ts`.
-
-3. On a second terminal, deploy the test contract:
-
-```
-yarn deploy
+struct JobStamp {
+    uint256 tokenId;
+    address client;
+    string jobTitle;
+    string summary;
+    uint8 rating; // 1-5 stars
+    uint256 completedDate;
+    string clientSignature;
+    bool isVerified;
+}
 ```
 
-This command deploys a test smart contract to the local network. The contract is located in `packages/hardhat/contracts` and can be modified to suit your needs. The `yarn deploy` command uses the deploy script located in `packages/hardhat/deploy` to deploy the contract to the network. You can also customize the deploy script.
+**Main Functions:**
+- `createProfile()` - Register a new user profile
+- `updateProfile()` - Update existing profile information
+- `giveStamp()` - Issue a job stamp to a worker
+- `getUserProfile()` - Retrieve user profile data
+- `getUserStamps()` - Get all stamps for a user
+- `getJobStamp()` - Get specific stamp details
+- `getUserAverageRating()` - Calculate average rating
+- `verifyStamp()` - Admin verification of stamps
 
-4. On a third terminal, start your NextJS app:
+## Frontend Components
 
-```
-yarn start
-```
+### Pages
+- **`/meritbase`** - Main dApp interface for profile management and stamp viewing
+- **`/profile/[address]`** - Public profile page for sharing and verification
 
-Visit your app on: `http://localhost:3000`. You can interact with your smart contract using the `Debug Contracts` page. You can tweak the app config in `packages/nextjs/scaffold.config.ts`.
+### Components
+- **`ProfileCard`** - Displays user profile with QR code and statistics
+- **`JobStampCard`** - Shows individual job stamps with ratings and verification
+- **`useJobStamp`** - Custom hook for fetching individual stamp data
 
-Run smart contract test with `yarn hardhat:test`
+## Getting Started
 
-- Edit your smart contracts in `packages/hardhat/contracts`
-- Edit your frontend homepage at `packages/nextjs/app/page.tsx`. For guidance on [routing](https://nextjs.org/docs/app/building-your-application/routing/defining-routes) and configuring [pages/layouts](https://nextjs.org/docs/app/building-your-application/routing/pages-and-layouts) checkout the Next.js documentation.
-- Edit your deployment scripts in `packages/hardhat/deploy`
+### Prerequisites
+- Node.js and Yarn
+- Git
 
+### Installation
+1. Clone the repository
+2. Install dependencies:
+   ```bash
+   yarn install
+   ```
 
-## Documentation
+### Development
+1. Start the local blockchain:
+   ```bash
+   yarn chain
+   ```
 
-Visit our [docs](https://docs.scaffoldeth.io) to learn how to start building with Scaffold-ETH 2.
+2. Deploy the contracts:
+   ```bash
+   yarn deploy
+   ```
 
-To know more about its features, check out our [website](https://scaffoldeth.io).
+3. Start the frontend:
+   ```bash
+   yarn start
+   ```
 
-## Contributing to Scaffold-ETH 2
+4. Open [http://localhost:3000](http://localhost:3000) in your browser
 
-We welcome contributions to Scaffold-ETH 2!
+### Usage
 
-Please see [CONTRIBUTING.MD](https://github.com/scaffold-eth/scaffold-eth-2/blob/main/CONTRIBUTING.md) for more information and guidelines for contributing to Scaffold-ETH 2.
+#### Creating a Profile
+1. Connect your wallet
+2. Navigate to `/meritbase`
+3. Click "Create Profile"
+4. Fill in your name, pseudonym, skills, and work categories
+5. Submit the transaction
+
+#### Giving a Job Stamp
+1. Click "Give Stamp" button
+2. Enter the worker's wallet address
+3. Fill in job details (title, summary, rating)
+4. Add your client signature
+5. Submit the transaction
+
+#### Viewing Public Profiles
+1. Navigate to `/profile/[wallet-address]`
+2. View the worker's profile and verified stamps
+3. Scan the QR code to share the profile
+
+## Mobile Optimization
+
+The dApp is fully optimized for mobile devices with:
+- Responsive grid layouts
+- Touch-friendly buttons and inputs
+- Compact card designs for small screens
+- Optimized typography and spacing
+- Mobile-specific QR code sizing
+
+## QR Code Integration
+
+Each profile generates a unique QR code that links to the public profile page:
+- Format: `https://meritbase.app/profile/[wallet-address]`
+- Enables easy sharing of professional reputation
+- Works with any QR code scanner
+- Portable across different platforms
+
+## Technology Stack
+
+- **Smart Contracts**: Solidity, OpenZeppelin
+- **Frontend**: Next.js, React, TypeScript
+- **Blockchain**: Hardhat, Ethers.js
+- **UI**: Tailwind CSS, Heroicons
+- **QR Codes**: qrcode.react
+- **Wallet**: RainbowKit, Wagmi
+
+## Contract Address
+
+The MeritBase contract is deployed at: `0x5FbDB2315678afecb367f032d93F642f64180aa3` (localhost)
+
+## Future Enhancements
+
+- IPFS integration for metadata storage
+- Multi-signature verification for stamps
+- Reputation scoring algorithms
+- Integration with other DeFi protocols
+- Mobile app development
+- Advanced analytics and insights
+
+## License
+
+MIT License - see LICENSE file for details
+
+## Contributing
+
+Contributions are welcome! Please feel free to submit a Pull Request.
+
+---
+
+**MeritBase** - Building the future of decentralized professional identity 🚀
