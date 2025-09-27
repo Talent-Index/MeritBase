@@ -52,7 +52,7 @@ export default function MeritBasePage() {
 
   // Read user profile
   const { data: userProfile, refetch: refetchProfile } = useScaffoldReadContract({
-    contractName: "MeritBaseCV",
+    contractName: "MeritBase",
     functionName: "getUserProfile",
     args: [address] as const,
   });
@@ -71,7 +71,7 @@ export default function MeritBasePage() {
     args: [address] as const,
   });
 
-  // Read user stamps count
+  // Read user stamps 
   const { data: stampsCount } = useScaffoldReadContract({
     contractName: "MeritBase",
     functionName: "getUserStampsCount",
