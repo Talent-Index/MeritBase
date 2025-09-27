@@ -44,7 +44,7 @@ export default function JobStampCard({ stamp, isMobile = false }: JobStampCardPr
     return (
       <div className="bg-white rounded-lg shadow-md p-4 mb-3 border border-gray-200">
         <div className="flex justify-between items-start mb-2">
-          <h3 className="font-semibold text-base text-gray-900 flex-1 pr-2">
+          <h3 className="font-semibold text-base text-black flex-1 pr-2">
             {stamp.jobTitle}
           </h3>
           <div className="flex items-center">
@@ -52,7 +52,7 @@ export default function JobStampCard({ stamp, isMobile = false }: JobStampCardPr
           </div>
         </div>
         
-        <p className="text-gray-600 text-sm mb-3 line-clamp-2">
+        <p className="text-gray-800 text-sm mb-3 line-clamp-2">
           {stamp.summary}
         </p>
         
@@ -79,7 +79,7 @@ export default function JobStampCard({ stamp, isMobile = false }: JobStampCardPr
   return (
     <div className="bg-white rounded-lg shadow-lg p-6 mb-4 border border-gray-200 hover:shadow-xl transition-shadow">
       <div className="flex justify-between items-start mb-3">
-        <h3 className="font-semibold text-xl text-gray-900">
+        <h3 className="font-semibold text-xl text-black">
           {stamp.jobTitle}
         </h3>
         <div className="flex items-center">
@@ -87,7 +87,7 @@ export default function JobStampCard({ stamp, isMobile = false }: JobStampCardPr
         </div>
       </div>
       
-      <p className="text-gray-600 mb-4">
+      <p className="text-gray-800 mb-4">
         {stamp.summary}
       </p>
       

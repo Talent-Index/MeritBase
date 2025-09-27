@@ -188,14 +188,14 @@ export default function MeritBasePage() {
       <div className="container mx-auto px-4 py-8">
         {/* Header */}
         <div className="text-center mb-8">
-          <h1 className="text-4xl font-bold text-gray-900 mb-2">MeritBase</h1>
-          <p className="text-xl text-gray-600">Your Decentralized Professional Identity</p>
+          <h1 className="text-4xl font-bold text-black mb-2">MeritBase</h1>
+          <p className="text-xl text-gray-800">Your Decentralized Professional Identity</p>
         </div>
 
         {/* Profile Section */}
         <div className="mb-8">
           <div className="flex justify-between items-center mb-4">
-            <h2 className="text-2xl font-semibold">Your Profile</h2>
+            <h2 className="text-2xl font-semibold text-black">Your Profile</h2>
             {!isRegistered && (
               <button
                 onClick={() => setIsProfileModalOpen(true)}
@@ -216,7 +216,7 @@ export default function MeritBasePage() {
             />
           ) : (
             <div className="bg-white rounded-lg shadow-lg p-8 text-center">
-              <p className="text-gray-600 mb-4">You haven't created a profile yet.</p>
+              <p className="text-gray-800 mb-4">You haven't created a profile yet.</p>
               <button
                 onClick={() => setIsProfileModalOpen(true)}
                 className="bg-blue-600 text-white px-6 py-3 rounded-lg hover:bg-blue-700 transition-colors"
@@ -232,7 +232,7 @@ export default function MeritBasePage() {
         {isRegistered && (
           <div className="bg-white rounded-lg shadow-lg p-6 mb-8">
             <div className="flex justify-between items-center mb-4">
-              <h2 className="text-2xl font-semibold">Your Job Stamps</h2>
+              <h2 className="text-2xl font-semibold text-black">Your Job Stamps</h2>
               <button
                 onClick={() => setIsGiveStampModalOpen(true)}
                 className="bg-green-600 text-white px-4 py-2 rounded-lg hover:bg-green-700 transition-colors"
@@ -249,7 +249,7 @@ export default function MeritBasePage() {
               </div>
             ) : (
               <div className="text-center py-8">
-                <p className="text-gray-600">No job stamps yet. Complete work to receive verifiable attestations!</p>
+                <p className="text-gray-800">No job stamps yet. Complete work to receive verifiable attestations!</p>
               </div>
             )}
           </div>
@@ -259,45 +259,45 @@ export default function MeritBasePage() {
         {isProfileModalOpen && (
           <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
             <div className="bg-white rounded-lg p-6 w-full max-w-md">
-              <h3 className="text-xl font-semibold mb-4">Create Your Profile</h3>
+              <h3 className="text-xl font-semibold mb-4 text-black">Create Your Profile</h3>
               <div className="space-y-4">
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">Name *</label>
+                  <label className="block text-sm font-medium text-black mb-1">Name *</label>
                   <input
                     type="text"
                     value={profileData.name}
                     onChange={(e) => setProfileData({ ...profileData, name: e.target.value })}
-                    className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500 text-black"
                     placeholder="Your full name"
                   />
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">Pseudonym</label>
+                  <label className="block text-sm font-medium text-black mb-1">Pseudonym</label>
                   <input
                     type="text"
                     value={profileData.pseudonym}
                     onChange={(e) => setProfileData({ ...profileData, pseudonym: e.target.value })}
-                    className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500 text-black"
                     placeholder="Your professional pseudonym"
                   />
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">Skills</label>
+                  <label className="block text-sm font-medium text-black mb-1">Skills</label>
                   <input
                     type="text"
                     value={profileData.skills}
                     onChange={(e) => setProfileData({ ...profileData, skills: e.target.value })}
-                    className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500 text-black"
                     placeholder="React, Solidity, Design (comma separated)"
                   />
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">Work Categories</label>
+                  <label className="block text-sm font-medium text-black mb-1">Work Categories</label>
                   <input
                     type="text"
                     value={profileData.workCategories}
                     onChange={(e) => setProfileData({ ...profileData, workCategories: e.target.value })}
-                    className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500 text-black"
                     placeholder="Web Development, Smart Contracts, UI/UX (comma separated)"
                   />
                 </div>
@@ -324,10 +324,10 @@ export default function MeritBasePage() {
         {isGiveStampModalOpen && (
           <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
             <div className="bg-white rounded-lg p-6 w-full max-w-md">
-              <h3 className="text-xl font-semibold mb-4">Give a Job Stamp</h3>
+              <h3 className="text-xl font-semibold mb-4 text-black">Give a Job Stamp</h3>
               <div className="space-y-4">
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">Worker Address *</label>
+                  <label className="block text-sm font-medium text-black mb-1">Worker Address *</label>
                   <AddressInput
                     value={stampData.workerAddress}
                     onChange={(value) => setStampData({ ...stampData, workerAddress: value })}
@@ -335,31 +335,31 @@ export default function MeritBasePage() {
                   />
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">Job Title *</label>
+                  <label className="block text-sm font-medium text-black mb-1">Job Title *</label>
                   <input
                     type="text"
                     value={stampData.jobTitle}
                     onChange={(e) => setStampData({ ...stampData, jobTitle: e.target.value })}
-                    className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500 text-black"
                     placeholder="e.g., Smart Contract Development"
                   />
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">Summary *</label>
+                  <label className="block text-sm font-medium text-black mb-1">Summary *</label>
                   <textarea
                     value={stampData.summary}
                     onChange={(e) => setStampData({ ...stampData, summary: e.target.value })}
-                    className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500 text-black"
                     rows={3}
                     placeholder="Describe the work completed..."
                   />
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">Rating</label>
+                  <label className="block text-sm font-medium text-black mb-1">Rating</label>
                   <select
                     value={stampData.rating}
                     onChange={(e) => setStampData({ ...stampData, rating: parseInt(e.target.value) })}
-                    className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500 text-black"
                   >
                     <option value={1}>1 Star</option>
                     <option value={2}>2 Stars</option>
@@ -369,12 +369,12 @@ export default function MeritBasePage() {
                   </select>
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">Client Signature</label>
+                  <label className="block text-sm font-medium text-black mb-1">Client Signature</label>
                   <input
                     type="text"
                     value={stampData.clientSignature}
                     onChange={(e) => setStampData({ ...stampData, clientSignature: e.target.value })}
-                    className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500 text-black"
                     placeholder="Your signature for verification"
                   />
                 </div>

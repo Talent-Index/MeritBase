@@ -46,13 +46,13 @@ export default function ProfileCard({
     return (
       <div className="bg-white rounded-lg shadow-md p-4 mb-4">
         <div className="flex items-start justify-between mb-4">
-          <div className="flex-1">
-            <h2 className="text-xl font-bold text-gray-900 mb-1">
-              {profile.name}
-            </h2>
-            {profile.pseudonym && (
-              <p className="text-gray-600 text-sm mb-2">@{profile.pseudonym}</p>
-            )}
+        <div className="flex-1">
+          <h2 className="text-xl font-bold text-black mb-1">
+            {profile.name}
+          </h2>
+          {profile.pseudonym && (
+            <p className="text-gray-800 text-sm mb-2">@{profile.pseudonym}</p>
+          )}
             <div className="flex items-center mb-2">
               <Address address={address} />
             </div>
@@ -73,7 +73,7 @@ export default function ProfileCard({
 
         {/* Skills */}
         <div className="mb-4">
-          <h3 className="font-semibold text-gray-700 mb-2 text-sm">Skills</h3>
+          <h3 className="font-semibold text-black mb-2 text-sm">Skills</h3>
           <div className="flex flex-wrap gap-1">
             {profile.skills.map((skill, index) => (
               <span
@@ -88,7 +88,7 @@ export default function ProfileCard({
 
         {/* Work Categories */}
         <div className="mb-4">
-          <h3 className="font-semibold text-gray-700 mb-2 text-sm">Work Categories</h3>
+          <h3 className="font-semibold text-black mb-2 text-sm">Work Categories</h3>
           <div className="flex flex-wrap gap-1">
             {profile.workCategories.map((category, index) => (
               <span
@@ -107,19 +107,19 @@ export default function ProfileCard({
             <div className="text-lg font-bold text-blue-600">
               {stampsCount?.toString() || "0"}
             </div>
-            <div className="text-xs text-gray-600">Stamps</div>
+            <div className="text-xs text-gray-800">Stamps</div>
           </div>
           <div className="text-center">
             <div className="text-lg font-bold text-green-600">
               {averageRating ? (Number(averageRating) / 10).toFixed(1) : "0.0"}
             </div>
-            <div className="text-xs text-gray-600">Rating</div>
+            <div className="text-xs text-gray-800">Rating</div>
           </div>
           <div className="text-center">
             <div className="text-lg font-bold text-purple-600">
               {formatDate(profile.createdAt).split(' ')[1]}
             </div>
-            <div className="text-xs text-gray-600">Joined</div>
+            <div className="text-xs text-gray-800">Joined</div>
           </div>
         </div>
       </div>
@@ -130,11 +130,11 @@ export default function ProfileCard({
     <div className="bg-white rounded-lg shadow-lg p-6 mb-8">
       <div className="flex flex-col md:flex-row items-start justify-between mb-6">
         <div className="flex-1">
-          <h2 className="text-3xl font-bold text-gray-900 mb-2">
+          <h2 className="text-3xl font-bold text-black mb-2">
             {profile.name}
           </h2>
           {profile.pseudonym && (
-            <p className="text-xl text-gray-600 mb-4">@{profile.pseudonym}</p>
+            <p className="text-xl text-gray-800 mb-4">@{profile.pseudonym}</p>
           )}
           <div className="flex items-center mb-4">
             <Address address={address} />
@@ -157,7 +157,7 @@ export default function ProfileCard({
       {/* Skills and Categories */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
         <div>
-          <h3 className="font-semibold text-gray-700 mb-3">Skills</h3>
+          <h3 className="font-semibold text-black mb-3">Skills</h3>
           <div className="flex flex-wrap gap-2">
             {profile.skills.map((skill, index) => (
               <span
@@ -170,7 +170,7 @@ export default function ProfileCard({
           </div>
         </div>
         <div>
-          <h3 className="font-semibold text-gray-700 mb-3">Work Categories</h3>
+          <h3 className="font-semibold text-black mb-3">Work Categories</h3>
           <div className="flex flex-wrap gap-2">
             {profile.workCategories.map((category, index) => (
               <span
@@ -190,19 +190,19 @@ export default function ProfileCard({
           <div className="text-3xl font-bold text-blue-600">
             {stampsCount?.toString() || "0"}
           </div>
-          <div className="text-sm text-gray-600">Total Stamps</div>
+          <div className="text-sm text-gray-800">Total Stamps</div>
         </div>
         <div className="text-center">
           <div className="text-3xl font-bold text-green-600">
             {averageRating ? (Number(averageRating) / 10).toFixed(1) : "0.0"}
           </div>
-          <div className="text-sm text-gray-600">Average Rating</div>
+          <div className="text-sm text-gray-800">Average Rating</div>
         </div>
         <div className="text-center">
           <div className="text-3xl font-bold text-purple-600">
             {formatDate(profile.createdAt)}
           </div>
-          <div className="text-sm text-gray-600">Member Since</div>
+          <div className="text-sm text-gray-800">Member Since</div>
         </div>
       </div>
     </div>

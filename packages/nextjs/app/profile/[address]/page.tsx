@@ -134,8 +134,8 @@ export default function ProfilePage() {
       <div className="container mx-auto px-4 py-8">
         {/* Header */}
         <div className="text-center mb-8">
-          <h1 className="text-4xl font-bold text-gray-900 mb-2">MeritBase Profile</h1>
-          <p className="text-xl text-gray-600">Decentralized Professional Identity</p>
+          <h1 className="text-4xl font-bold text-black mb-2">MeritBase Profile</h1>
+          <p className="text-xl text-gray-800">Decentralized Professional Identity</p>
         </div>
 
         {/* Profile Card */}
@@ -149,7 +149,7 @@ export default function ProfilePage() {
 
         {/* Job Stamps */}
         <div className="bg-white rounded-lg shadow-lg p-6">
-          <h2 className="text-2xl font-semibold mb-6">Verified Job Stamps</h2>
+          <h2 className="text-2xl font-semibold mb-6 text-black">Verified Job Stamps</h2>
           
           {stamps.length > 0 ? (
             <div className="space-y-4">
@@ -159,7 +159,7 @@ export default function ProfilePage() {
             </div>
           ) : (
             <div className="text-center py-8">
-              <p className="text-gray-600">No job stamps available yet.</p>
+              <p className="text-gray-800">No job stamps available yet.</p>
             </div>
           )}
         </div>
