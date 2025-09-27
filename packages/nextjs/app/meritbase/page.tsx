@@ -71,7 +71,7 @@ export default function MeritBasePage() {
     args: [address] as const,
   });
 
-  // Read user stamps  yye
+  // Read user stamps  yugdsudu
   const { data: stampsCount } = useScaffoldReadContract({
     contractName: "MeritBase",
     functionName: "getUserStampsCount",
