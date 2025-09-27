@@ -72,7 +72,7 @@ export default function MeritBasePage() {
   });
 
 
-  // Read user stamps  yugdsuduiyufier
+  // Read user stamps  yugdsuduiyufi
   const { data: stampsCount } = useScaffoldReadContract({
     contractName: "MeritBase",
     functionName: "getUserStampsCount",
