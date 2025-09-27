@@ -61,7 +61,7 @@ struct JobStamp {
 ## Frontend Components
 
 ### Pages
-- **`/meritbase`** - Main dApp interface for profile management and stamp viewing
+- **`/`** - Main MeritBase dApp interface for profile management and stamp viewing (home page)
 - **`/profile/[address]`** - Public profile page for sharing and verification
 
 ### Components
@@ -104,7 +104,7 @@ struct JobStamp {
 
 #### Creating a Profile
 1. Connect your wallet
-2. Navigate to `/meritbase`
+2. Visit the home page (MeritBase loads automatically)
 3. Click "Create Profile"
 4. Fill in your name, pseudonym, skills, and work categories
 5. Submit the transaction
