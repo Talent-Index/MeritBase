@@ -76,12 +76,10 @@ export default function ProfileStep() {
     
     setIsPending(true);
     try {
-      // 1. Fetch a new nonce *right before* signing
       const nonceRes = await fetch('/api/auth/nonce');
       if (!nonceRes.ok) throw new Error('Failed to fetch nonce.');
       const { nonce } = await nonceRes.json();
       
-      // 2. Create the SIWE message with the fresh nonce
       const message = new SiweMessage({
         domain: window.location.host,
         address,
@@ -92,12 +90,10 @@ export default function ProfileStep() {
         nonce,
       });
 
-      // 3. Ask the user to sign the message
       const signature = await signMessageAsync({
         message: message.prepareMessage(),
       });
 
-      // 4. Send the signature and message to the server for verification
       const verifyRes = await fetch('/api/auth/verify', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },

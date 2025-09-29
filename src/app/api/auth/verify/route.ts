@@ -25,7 +25,6 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ ok: true, address: data.address });
   } catch (error: any) {
     console.error("Verification Error:", error);
-    // Return a more specific error if verification fails
     if (error instanceof Error && error.message.includes('signature')) {
        return NextResponse.json(
         { ok: false, message: `Verification failed: ${error.message}` },
