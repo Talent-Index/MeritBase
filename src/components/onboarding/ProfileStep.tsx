@@ -1,3 +1,4 @@
+
 'use client';
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -5,7 +6,7 @@ import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { ArrowRight, Plus, X } from "lucide-react";
 import Link from "next/link";
-import { FormEvent, useState, useMemo } from "react";
+import { FormEvent, useState, useMemo, useRef } from "react";
 import { useToast } from "@/hooks/use-toast";
 import { useRouter } from "next/navigation";
 import { Loader2 } from "lucide-react";
@@ -23,6 +24,8 @@ export default function ProfileStep() {
   const [selectedSkills, setSelectedSkills] = useState<string[]>([]);
   const [customSkill, setCustomSkill] = useState("");
   const [showCustomInput, setShowCustomInput] = useState(false);
+
+  const formRef = useRef<HTMLFormElement>(null);
 
   const { address, chainId } = useAccount();
   const { signMessageAsync } = useSignMessage();
@@ -52,6 +55,19 @@ export default function ProfileStep() {
   const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     setIsPending(true);
+
+    if (!formRef.current) {
+        setIsPending(false);
+        return;
+    }
+    
+    const formData = new FormData(formRef.current);
+    const profileData = {
+        fullName: formData.get('fullName') as string,
+        displayName: formData.get('displayName') as string,
+        bio: formData.get('bio') as string,
+        skills: selectedSkills,
+    };
     
     try {
       const res = await fetch('/api/auth/nonce');
@@ -82,6 +98,9 @@ export default function ProfileStep() {
       const { ok } = await verifyRes.json();
 
       if(ok) {
+        // Save profile data to localStorage to persist it across steps
+        localStorage.setItem('freelancerProfile', JSON.stringify(profileData));
+        
         toast({
           title: "Profile Step Complete!",
           description: "You are authenticated. Let's connect your other profiles.",
@@ -103,20 +122,20 @@ export default function ProfileStep() {
   };
 
   return (
-    <form onSubmit={handleSubmit} className="space-y-6">
+    <form ref={formRef} onSubmit={handleSubmit} className="space-y-6">
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         <div className="space-y-2">
           <Label htmlFor="fullName">Full Name</Label>
-          <Input id="fullName" placeholder="Alice Johnson" required />
+          <Input id="fullName" name="fullName" placeholder="Alice Johnson" required />
         </div>
         <div className="space-y-2">
           <Label htmlFor="displayName">Display Name</Label>
-          <Input id="displayName" placeholder="Alice" required />
+          <Input id="displayName" name="displayName" placeholder="Alice" required />
         </div>
       </div>
        <div className="space-y-2">
         <Label htmlFor="bio">Short Bio</Label>
-        <Textarea id="bio" placeholder="Tell us a little about yourself..." required />
+        <Textarea id="bio" name="bio" placeholder="Tell us a little about yourself..." required />
       </div>
       <div className="space-y-3">
         <Label>Primary Skills</Label>
