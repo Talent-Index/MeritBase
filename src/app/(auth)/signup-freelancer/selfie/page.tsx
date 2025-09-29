@@ -4,7 +4,7 @@ import SelfieStep from "@/components/onboarding/SelfieStep";
 
 export default function SelfiePage() {
   return (
-    <OnboardingLayout currentStep={3} totalSteps={4} title="Liveness Check">
+    <OnboardingLayout currentStep={4} totalSteps={4} title="Liveness Check">
        <div className="grid md:grid-cols-2 min-h-[70vh]">
         <div className="p-8 md:p-12 flex flex-col justify-center">
            <h1 className="text-3xl font-bold tracking-tighter sm:text-4xl xl:text-5xl/none font-headline mb-6">

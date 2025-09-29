@@ -5,7 +5,7 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 
 export default function DocumentsPage() {
   return (
-    <OnboardingLayout currentStep={2} totalSteps={4} title="Verify your identity">
+    <OnboardingLayout currentStep={3} totalSteps={4} title="Verify your identity">
        <div className="grid md:grid-cols-2 min-h-[70vh]">
         <div className="p-8 md:p-12 flex flex-col justify-center">
            <h1 className="text-3xl font-bold tracking-tighter sm:text-4xl xl:text-5xl/none font-headline mb-6">

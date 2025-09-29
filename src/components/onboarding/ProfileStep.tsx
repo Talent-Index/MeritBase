@@ -53,10 +53,10 @@ export default function ProfileStep() {
     setTimeout(() => {
       toast({
         title: "Profile Step Complete!",
-        description: "Your account has been created. Let's upload your documents.",
+        description: "Your account has been created. Let's connect your other profiles.",
       });
       
-      router.push('/signup-freelancer/documents');
+      router.push('/signup-freelancer/connections');
       setIsPending(false);
     }, 1000);
   };
@@ -98,7 +98,7 @@ export default function ProfileStep() {
       <div className="space-y-3">
         <Label>Primary Skills</Label>
         <div className="p-3 border rounded-lg bg-background/50">
-           <div className="flex items-center gap-2 mb-3">
+           <div className="flex items-start gap-2 mb-3">
              <ScrollArea className="h-20 w-full">
                 <div className="flex flex-wrap gap-2 items-center">
                     {selectedSkills.map(skill => (
@@ -116,6 +116,7 @@ export default function ProfileStep() {
                                 onChange={(e) => setCustomSkill(e.target.value)}
                                 placeholder="Your skill..."
                                 className="h-7 text-xs"
+                                onKeyDown={(e) => { if (e.key === 'Enter') { e.preventDefault(); handleAddCustomSkill(); }}}
                             />
                             <Button type="button" size="sm" onClick={handleAddCustomSkill} className="h-7">Add</Button>
                         </div>
@@ -158,7 +159,7 @@ export default function ProfileStep() {
         </p>
         <Button type="submit" disabled={isPending} size="lg" className="bg-gradient-to-r from-purple-500 to-pink-500 text-white font-bold hover:opacity-90 transition-opacity">
             {isPending && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
-            Next: Documents <ArrowRight className="ml-2 h-4 w-4" />
+            Next: Connections <ArrowRight className="ml-2 h-4 w-4" />
         </Button>
       </div>
     </form>
