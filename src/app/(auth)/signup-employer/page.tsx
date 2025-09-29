@@ -1,3 +1,4 @@
+
 'use client';
 import { Button } from "@/components/ui/button";
 import {
@@ -15,22 +16,57 @@ import { FileUp, Loader2, Wallet } from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
-import { useAccount, useSignMessage } from "wagmi";
+import { useAccount, useSignMessage, useContractWrite, useWaitForTransaction } from "wagmi";
 import { SiweMessage } from 'siwe';
 import { ConnectButton } from "@/components/ConnectButton";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
-
+import { contracts } from "@/lib/contracts";
 
 export default function SignupEmployerPage() {
-  const [isPending, setIsPending] = useState(false);
+  const [isSigningIn, setIsSigningIn] = useState(false);
+  const [companyName, setCompanyName] = useState("");
   const { address, chainId, isConnected } = useAccount();
   const { signMessageAsync } = useSignMessage();
   const { toast } = useToast();
   const router = useRouter();
 
-  const handleSignIn = async () => {
+  const { data, write, isLoading: isContractWriteLoading } = useContractWrite({
+    address: contracts.EmployerRegistry.address,
+    abi: contracts.EmployerRegistry.abi,
+    functionName: 'registerEmployer',
+  });
+
+  const { isLoading: isTxLoading } = useWaitForTransaction({
+    hash: data?.hash,
+    onSuccess(data) {
+       toast({
+          title: "Company Registered!",
+          description: "Your company is now registered on-chain.",
+        });
+        router.push('/dashboard-employer');
+    },
+    onError(error) {
+       toast({
+        variant: "destructive",
+        title: "Transaction Failed",
+        description: error.message,
+      });
+    }
+  });
+
+
+  const handleSignInAndRegister = async () => {
+    if (!companyName) {
+      toast({
+        variant: "destructive",
+        title: "Company Name Required",
+        description: "Please enter your company's name.",
+      });
+      return;
+    }
+
     try {
-      setIsPending(true);
+      setIsSigningIn(true);
       const res = await fetch('/api/auth/nonce');
       const { nonce } = await res.json();
       
@@ -60,9 +96,12 @@ export default function SignupEmployerPage() {
       if(ok) {
         toast({
           title: "Authenticated!",
-          description: "You have successfully signed in.",
+          description: "Please confirm the transaction to register your company.",
         });
-        router.push('/dashboard-employer');
+        // Now call the smart contract
+        write({
+          args: [address, companyName, "hr@example.com", "ipfs://license_cid"], // Dummy data for now
+        });
       } else {
          throw new Error('Verification failed on server.');
       }
@@ -75,9 +114,11 @@ export default function SignupEmployerPage() {
         description: error.message || "An unexpected error occurred.",
       });
     } finally {
-      setIsPending(false);
+      setIsSigningIn(false);
     }
   };
+
+  const isPending = isSigningIn || isContractWriteLoading || isTxLoading;
   
   return (
     <Card className="w-full max-w-lg">
@@ -92,7 +133,13 @@ export default function SignupEmployerPage() {
           <>
             <div className="space-y-2">
               <Label htmlFor="company-name">Company Name</Label>
-              <Input id="company-name" placeholder="DecentraCorp" required />
+              <Input 
+                id="company-name" 
+                placeholder="DecentraCorp" 
+                required 
+                value={companyName}
+                onChange={(e) => setCompanyName(e.target.value)}
+              />
             </div>
             <div className="space-y-2">
               <Label htmlFor="email">Work Email</Label>
@@ -128,9 +175,9 @@ export default function SignupEmployerPage() {
         )}
         </CardContent>
         <CardFooter className="flex flex-col gap-4">
-          <Button className="w-full" onClick={handleSignIn} disabled={isPending || !isConnected}>
+          <Button className="w-full" onClick={handleSignInAndRegister} disabled={isPending || !isConnected}>
             {isPending && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
-            Sign In & Create Company Account
+            {isSigningIn ? "Signing In..." : isContractWriteLoading ? "Waiting for Approval..." : isTxLoading ? "Registering..." : "Sign In & Register Company"}
           </Button>
           <p className="text-xs text-center text-muted-foreground">
               Already have an account?{" "}
