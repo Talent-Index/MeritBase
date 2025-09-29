@@ -1,44 +1,42 @@
 import { HardhatRuntimeEnvironment } from "hardhat/types";
 import { DeployFunction } from "hardhat-deploy/types";
-import { Contract } from "ethers";
 
 /**
- * Deploys MeritBase contract - a decentralized identity wallet for on-chain CV
- *
- * @param hre HardhatRuntimeEnvironment object.
+ * Deploys the Meritbase gig platform registry and job contracts.
  */
-const deployMeritBase: DeployFunction = async function (hre: HardhatRuntimeEnvironment) {
-  /*
-    On localhost, the deployer account is the one that comes with Hardhat, which is already funded.
-
-    When deploying to live networks (e.g `yarn deploy --network sepolia`), the deployer account
-    should have sufficient balance to pay for the gas fees for contract creation.
-
-    You can generate a random account with `yarn generate` or `yarn account:import` to import your
-    existing PK which will fill DEPLOYER_PRIVATE_KEY_ENCRYPTED in the .env file (then used on hardhat.config.ts)
-    You can run the `yarn account` command to check your balance in every network.
-  */
+const deployMeritbaseCore: DeployFunction = async function (hre: HardhatRuntimeEnvironment) {
   const { deployer } = await hre.getNamedAccounts();
-  const { deploy } = hre.deployments;
+  const { deploy, log } = hre.deployments;
 
-  await deploy("MeritBase", {
+  log("Deploying FreelancerRegistry...");
+  const freelancerRegistry = await deploy("FreelancerRegistry", {
     from: deployer,
-    // No constructor arguments needed for MeritBase
-    args: [],
+    args: [deployer],
     log: true,
-    // autoMine: can be passed to the deploy function to make the deployment process faster on local networks by
-    // automatically mining the contract deployment transaction. There is no effect on live networks.
     autoMine: true,
   });
 
-  // Get the deployed contract to interact with it after deploying.
-  const meritBase = await hre.ethers.getContract<Contract>("MeritBase", deployer);
-  console.log("🚀 MeritBase deployed at:", await meritBase.getAddress());
-  console.log("📊 Contract stats:", await meritBase.getStats());
+  log("Deploying EmployerRegistry...");
+  const employerRegistry = await deploy("EmployerRegistry", {
+    from: deployer,
+    args: [deployer],
+    log: true,
+    autoMine: true,
+  });
+
+  log("Deploying JobContract...");
+  await deploy("JobContract", {
+    from: deployer,
+    args: [deployer, freelancerRegistry.address, employerRegistry.address],
+    log: true,
+    autoMine: true,
+  });
+
+  log(`FreelancerRegistry deployed at ${freelancerRegistry.address}`);
+  log(`EmployerRegistry deployed at ${employerRegistry.address}`);
+  log("Meritbase core contracts deployed");
 };
 
-export default deployMeritBase;
+export default deployMeritbaseCore;
 
-// Tags are useful if you have multiple deploy files and only want to run one of them.
-// e.g. yarn deploy --tags MeritBase
-deployMeritBase.tags = ["MeritBase"];
+deployMeritbaseCore.tags = ["meritbase-core"];

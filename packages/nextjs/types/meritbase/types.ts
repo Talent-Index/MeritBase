@@ -1,32 +1,82 @@
-export type Profile = {
+export type VerificationStatus = "PENDING" | "APPROVED" | "REJECTED";
+export type JobStatus = "DRAFT" | "OPEN" | "IN_REVIEW" | "COMPLETED" | "CANCELLED";
+export type ApplicationStatus = "PENDING" | "SHORTLISTED" | "APPROVED" | "REJECTED" | "WITHDRAWN";
+
+export interface FreelancerProfile {
   address: string;
-  name: string;
-  pseudonym?: string;
+  fullName: string;
+  email: string;
+  phone: string;
+  summary?: string;
   skills: string[];
-  workCategories: string[];
-  isActive: boolean;
-  verified?: boolean; // employer verification flag
-  license?: string; // license metadata or url
-  createdAt: number;
-};
+  profileCid: string;
+  govIdCid: string;
+  cvCid: string;
+  cvHash: string;
+  status: VerificationStatus;
+  createdAt: string;
+  updatedAt: string;
+  onchain?: unknown;
+  reputation?: {
+    cumulativeRating: number;
+    ratingCount: number;
+    gigsCompleted: number;
+    badges: string[];
+  };
+}
 
-export type Job = {
-  id: string;
-  employer: string; // address
+export interface EmployerProfile {
+  address: string;
+  companyName: string;
+  contactEmail: string;
+  licenseCid: string;
+  status: VerificationStatus;
+  createdAt: string;
+  updatedAt: string;
+  onchain?: unknown;
+}
+
+export interface MeritbaseJob {
+  id: number;
+  employerAddress: string;
   title: string;
-  description: string;
-  fee: number;
-  venue?: string;
-  date?: string; // ISO string
-  requirements: string[];
-  createdAt: number;
-  status: "open" | "closed";
-};
+  descriptionCid: string;
+  requirementsCid: string;
+  openings: number;
+  status: JobStatus;
+  metadata?: Record<string, unknown> | null;
+  createdAt: string;
+  updatedAt: string;
+}
 
-export type Application = {
-  id: string;
-  jobId: string;
-  applicant: string; // address
-  status: "pending" | "approved" | "declined";
-  createdAt: number;
-};
+export interface MeritbaseApplication {
+  id: number;
+  jobId: number;
+  freelancerAddress: string;
+  proposalCid: string;
+  status: ApplicationStatus;
+  matchScore: number;
+  matchExplanation?: string | null;
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface MeritbaseReview {
+  id: number;
+  jobId: number;
+  employerAddress: string;
+  freelancerAddress: string;
+  rating: number;
+  reviewCid: string;
+  badgeCid?: string | null;
+  createdAt: string;
+}
+
+export interface MatchScore {
+  freelancerAddress: string;
+  jobId: number;
+  score: number;
+  explanation: string;
+}
+
+export type OnboardingStep = "profile" | "kyc" | "wallet" | "complete";
