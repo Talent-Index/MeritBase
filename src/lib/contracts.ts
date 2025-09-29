@@ -1,6 +1,6 @@
 
-import EmployerRegistry from '../../contracts/deployments/localhost/EmployerRegistry.json';
-import FreelancerRegistry from '../../contracts/deployments/localhost/FreelancerRegistry.json';
+import EmployerRegistry from 'contracts/deployments/localhost/EmployerRegistry.json';
+import FreelancerRegistry from 'contracts/deployments/localhost/FreelancerRegistry.json';
 
 // Utility type to extract ABI
 type ContractAbi<T> = T extends { abi: infer U } ? U : never;
