@@ -14,9 +14,7 @@ import {
   Home,
   Briefcase,
   Users,
-  Settings,
   LogOut,
-  FileText,
   Bell,
   Wallet,
 } from "lucide-react";
