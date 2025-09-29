@@ -10,22 +10,43 @@ import {
 } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { useToast } from "@/hooks/use-toast";
+import { auth } from "@/lib/firebase";
+import { createUserWithEmailAndPassword } from "firebase/auth";
 import { FileUp, Loader2 } from "lucide-react";
 import Link from "next/link";
-import { useState } from "react";
+import { useRouter } from "next/navigation";
+import { useState, type FormEvent } from "react";
+
 
 export default function SignupEmployerPage() {
   const [isPending, setIsPending] = useState(false);
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const { toast } = useToast();
+  const router = useRouter();
 
-  const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     setIsPending(true);
-    // Simulate a network request
-    setTimeout(() => {
+    
+    try {
+      await createUserWithEmailAndPassword(auth, email, password);
+      toast({
+        title: "Account Created!",
+        description: "You have successfully signed up as an employer.",
+      });
+      router.push('/dashboard-employer');
+    } catch (error: any) {
+      console.error("Signup error:", error);
+      toast({
+        variant: "destructive",
+        title: "Uh oh! Something went wrong.",
+        description: error.message || "There was a problem with your request.",
+      });
+    } finally {
       setIsPending(false);
-      // You can add logic here to redirect or show a success message.
-      // For now, it will just re-enable the button.
-    }, 2000);
+    }
   };
   
   return (
@@ -44,7 +65,25 @@ export default function SignupEmployerPage() {
           </div>
           <div className="space-y-2">
             <Label htmlFor="email">Work Email</Label>
-            <Input id="email" type="email" placeholder="hr@example.com" required />
+            <Input 
+              id="email" 
+              type="email" 
+              placeholder="hr@example.com" 
+              required 
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+            />
+          </div>
+           <div className="space-y-2">
+            <Label htmlFor="password">Password</Label>
+            <Input 
+              id="password" 
+              type="password" 
+              placeholder="••••••••" 
+              required 
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+            />
           </div>
           <div className="space-y-2">
               <Label htmlFor="license">Company License</Label>
