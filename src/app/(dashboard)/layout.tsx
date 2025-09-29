@@ -46,7 +46,7 @@ export default function DashboardLayout({
               </SidebarMenuButton>
             </SidebarMenuItem>
             <SidebarMenuItem>
-              <SidebarMenuButton href="/dashboard-freelancer">
+              <SidebarMenuButton href="/dashboard-freelancer/cv-wallet">
                 <Wallet />
                 CVWallet
               </SidebarMenuButton>
