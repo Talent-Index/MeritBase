@@ -1,4 +1,3 @@
-
 'use client';
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -14,8 +13,8 @@ import { popularSkills } from "@/lib/skills";
 import { Badge } from "@/components/ui/badge";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { cn } from "@/lib/utils";
-import { createUserWithEmailAndPassword } from "firebase/auth";
-import { auth } from "@/lib/firebase";
+import { useAccount, useSignMessage } from "wagmi";
+import { SiweMessage } from 'siwe';
 
 export default function ProfileStep() {
   const [isPending, setIsPending] = useState(false);
@@ -24,8 +23,9 @@ export default function ProfileStep() {
   const [selectedSkills, setSelectedSkills] = useState<string[]>([]);
   const [customSkill, setCustomSkill] = useState("");
   const [showCustomInput, setShowCustomInput] = useState(false);
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
+
+  const { address, chainId } = useAccount();
+  const { signMessageAsync } = useSignMessage();
 
   const availableSkills = useMemo(() => {
     return popularSkills.filter(skill => !selectedSkills.includes(skill));
@@ -54,17 +54,47 @@ export default function ProfileStep() {
     setIsPending(true);
     
     try {
-      await createUserWithEmailAndPassword(auth, email, password);
-      toast({
-        title: "Profile Step Complete!",
-        description: "Your account has been created. Let's connect your other profiles.",
+      const res = await fetch('/api/auth/nonce');
+      const { nonce } = await res.json();
+      
+      const message = new SiweMessage({
+        domain: window.location.host,
+        address,
+        statement: 'Sign in to MeritBase as a freelancer.',
+        uri: window.location.origin,
+        version: '1',
+        chainId,
+        nonce,
       });
-      router.push('/signup-freelancer/connections');
+
+      const signature = await signMessageAsync({
+        message: message.prepareMessage(),
+      });
+
+      const verifyRes = await fetch('/api/auth/verify', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ message, signature }),
+      });
+
+      if (!verifyRes.ok) throw new Error('Failed to verify signature.');
+      
+      const { ok } = await verifyRes.json();
+
+      if(ok) {
+        toast({
+          title: "Profile Step Complete!",
+          description: "You are authenticated. Let's connect your other profiles.",
+        });
+        router.push('/signup-freelancer/connections');
+      } else {
+         throw new Error('Verification failed on server.');
+      }
     } catch (error: any) {
-      console.error("Firebase Auth Error:", error);
+      console.error("SIWE Error:", error);
       toast({
         variant: "destructive",
-        title: "Signup Failed",
+        title: "Authentication Failed",
         description: error.message || "An unexpected error occurred.",
       });
     } finally {
@@ -82,28 +112,6 @@ export default function ProfileStep() {
         <div className="space-y-2">
           <Label htmlFor="displayName">Display Name</Label>
           <Input id="displayName" placeholder="Alice" required />
-        </div>
-        <div className="space-y-2">
-          <Label htmlFor="email">Email</Label>
-          <Input
-            id="email"
-            type="email"
-            placeholder="alice@example.com"
-            required
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-          />
-        </div>
-        <div className="space-y-2">
-          <Label htmlFor="password">Password</Label>
-          <Input
-            id="password"
-            type="password"
-            placeholder="••••••••"
-            required
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-          />
         </div>
       </div>
        <div className="space-y-2">
@@ -174,7 +182,7 @@ export default function ProfileStep() {
         </p>
         <Button type="submit" disabled={isPending} size="lg" className="bg-gradient-to-r from-purple-500 to-pink-500 text-white font-bold hover:opacity-90 transition-opacity">
             {isPending && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
-            Next: Connections <ArrowRight className="ml-2 h-4 w-4" />
+            Sign In & Next <ArrowRight className="ml-2 h-4 w-4" />
         </Button>
       </div>
     </form>

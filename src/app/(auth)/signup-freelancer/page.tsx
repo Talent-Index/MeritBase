@@ -1,8 +1,15 @@
+'use client';
 import OnboardingLayout from "@/components/onboarding/OnboardingLayout";
 import ProfileStep from "@/components/onboarding/ProfileStep";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { useAccount } from "wagmi";
+import { ConnectButton } from "@/components/ConnectButton";
+import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
+import { Wallet } from "lucide-react";
 
 export default function SignupFreelancerPage() {
+  const { isConnected } = useAccount();
+
   return (
     <OnboardingLayout currentStep={1} totalSteps={4} title="Create your Profile">
       <div className="grid md:grid-cols-2 min-h-[70vh]">
@@ -10,7 +17,20 @@ export default function SignupFreelancerPage() {
            <h1 className="text-3xl font-bold tracking-tighter sm:text-4xl xl:text-5xl/none font-headline mb-6">
             <span className="gradient-text">Create your Profile</span>
           </h1>
-          <ProfileStep />
+          {isConnected ? (
+            <ProfileStep />
+          ) : (
+            <div className="space-y-4">
+              <Alert>
+                <Wallet className="h-4 w-4" />
+                <AlertTitle>Connect your wallet to begin</AlertTitle>
+                <AlertDescription>
+                  Your wallet is your identity on MeritBase. Please connect your wallet to start creating your CVWallet.
+                </AlertDescription>
+              </Alert>
+              <ConnectButton />
+            </div>
+          )}
         </div>
         <div className="hidden md:flex flex-col justify-center p-8 md:p-12 bg-gradient-to-br from-purple-900/20 to-pink-900/20 border-l border-white/10">
             <div className="space-y-4">
