@@ -1,76 +1,156 @@
 'use client';
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { ArrowRight, FileUp, Github, Link as LinkIcon, Loader2 } from "lucide-react";
+import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
+import { ArrowRight, Loader2, UploadCloud, File, X } from "lucide-react";
 import { useRouter } from "next/navigation";
-import { FormEvent, useState } from "react";
+import { FormEvent, useState, useCallback, useRef } from "react";
 import { useToast } from "@/hooks/use-toast";
+import { cn } from "@/lib/utils";
 
 export default function DocumentsStep() {
     const [isPending, setIsPending] = useState(false);
+    const [file, setFile] = useState<File | null>(null);
+    const [isDragging, setIsDragging] = useState(false);
+    const fileInputRef = useRef<HTMLInputElement>(null);
     const router = useRouter();
     const { toast } = useToast();
 
+    const handleFileChange = (selectedFile: File | null) => {
+        if (selectedFile) {
+            if (selectedFile.size > 5 * 1024 * 1024) { // 5MB limit
+                toast({
+                    variant: "destructive",
+                    title: "File too large",
+                    description: "Please upload a file smaller than 5MB.",
+                });
+                return;
+            }
+            setFile(selectedFile);
+        }
+    };
+    
+    const handleDragEnter = (e: React.DragEvent<HTMLDivElement>) => {
+        e.preventDefault();
+        e.stopPropagation();
+        setIsDragging(true);
+    };
+
+    const handleDragLeave = (e: React.DragEvent<HTMLDivElement>) => {
+        e.preventDefault();
+        e.stopPropagation();
+        setIsDragging(false);
+    };
+
+    const handleDragOver = (e: React.DragEvent<HTMLDivElement>) => {
+        e.preventDefault();
+        e.stopPropagation();
+    };
+
+    const handleDrop = (e: React.DragEvent<HTMLDivElement>) => {
+        e.preventDefault();
+        e.stopPropagation();
+        setIsDragging(false);
+        const droppedFile = e.dataTransfer.files[0];
+        handleFileChange(droppedFile);
+    };
+    
+    const onFileInputClick = () => {
+        fileInputRef.current?.click();
+    };
+
+
     const handleSubmit = (event: FormEvent<HTMLFormElement>) => {
         event.preventDefault();
+        if (!file) {
+            toast({
+                variant: "destructive",
+                title: "No file selected",
+                description: "Please upload your government-issued ID.",
+            });
+            return;
+        }
         setIsPending(true);
 
-        // Simulate document upload and processing
         setTimeout(() => {
             toast({
                 title: "Documents Uploaded!",
                 description: "Next, you'll review and anchor your CVWallet on-chain.",
             });
-            // In a real app, you'd navigate to the next step, e.g., '/signup-freelancer/review'
             router.push('/dashboard-freelancer');
             setIsPending(false);
         }, 1500);
     };
 
     return (
-        <form onSubmit={handleSubmit} className="space-y-6">
+        <form onSubmit={handleSubmit} className="space-y-8">
+            <div className="space-y-4">
+                 <Label className="font-medium">Government-issued ID</Label>
+                 <RadioGroup defaultValue="identity-card" className="grid grid-cols-3 gap-4">
+                     <div>
+                         <RadioGroupItem value="passport" id="passport" className="peer sr-only" />
+                         <Label htmlFor="passport" className="flex flex-col items-center justify-between rounded-md border-2 border-muted bg-popover p-4 hover:bg-accent hover:text-accent-foreground peer-data-[state=checked]:border-primary [&:has([data-state=checked])]:border-primary">
+                             Passport
+                         </Label>
+                     </div>
+                     <div>
+                         <RadioGroupItem value="drivers-license" id="drivers-license" className="peer sr-only" />
+                         <Label htmlFor="drivers-license" className="flex flex-col items-center justify-between rounded-md border-2 border-muted bg-popover p-4 hover:bg-accent hover:text-accent-foreground peer-data-[state=checked]:border-primary [&:has([data-state=checked])]:border-primary">
+                             Driver's License
+                         </Label>
+                     </div>
+                     <div>
+                         <RadioGroupItem value="identity-card" id="identity-card" className="peer sr-only" />
+                         <Label htmlFor="identity-card" className="flex flex-col items-center justify-between rounded-md border-2 border-muted bg-popover p-4 hover:bg-accent hover:text-accent-foreground peer-data-[state=checked]:border-primary [&:has([data-state=checked])]:border-primary">
+                             Identity Card
+                         </Label>
+                     </div>
+                 </RadioGroup>
+            </div>
+            
             <div className="space-y-2">
-                <Label htmlFor="cv-upload">Upload CV (PDF)</Label>
-                <div className="relative">
-                    <Input id="cv-upload" type="file" className="pl-12" accept=".pdf" required />
-                    <div className="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
-                        <FileUp className="w-5 h-5 text-muted-foreground" />
-                    </div>
+                 <div
+                    onClick={onFileInputClick}
+                    onDragEnter={handleDragEnter}
+                    onDragLeave={handleDragLeave}
+                    onDragOver={handleDragOver}
+                    onDrop={handleDrop}
+                    className={cn(
+                        "flex flex-col items-center justify-center w-full p-8 border-2 border-dashed rounded-lg cursor-pointer transition-colors",
+                        isDragging ? "border-primary bg-primary/10" : "border-border hover:border-primary/50"
+                    )}
+                >
+                    <input
+                        ref={fileInputRef}
+                        type="file"
+                        className="hidden"
+                        onChange={(e) => handleFileChange(e.target.files ? e.target.files[0] : null)}
+                        accept="image/png, image/jpeg, application/pdf"
+                    />
+                    <UploadCloud className="w-10 h-10 mb-4 text-muted-foreground" />
+                    <p className="mb-2 text-sm text-center text-muted-foreground">
+                        <span className="font-semibold text-primary">Click to upload</span> or drag and drop
+                    </p>
+                    <p className="text-xs text-muted-foreground">PNG, JPG or PDF (max. 5MB)</p>
                 </div>
             </div>
-            <div className="space-y-2">
-                <Label htmlFor="gov-id-upload">Government ID (PDF, JPG, PNG)</Label>
-                 <div className="relative">
-                    <Input id="gov-id-upload" type="file" className="pl-12" accept=".pdf,.jpg,.jpeg,.png" required />
-                    <div className="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
-                        <FileUp className="w-5 h-5 text-muted-foreground" />
+
+            {file && (
+                <div className="p-3 bg-muted rounded-md flex items-center justify-between text-sm">
+                    <div className="flex items-center gap-2">
+                        <File className="w-5 h-5" />
+                        <span className="font-medium truncate">{file.name}</span>
                     </div>
+                    <Button variant="ghost" size="icon" className="h-6 w-6" onClick={() => setFile(null)}>
+                        <X className="h-4 w-4" />
+                    </Button>
                 </div>
-                <p className="text-xs text-muted-foreground">For verification purposes only. Your data is encrypted and secure.</p>
-            </div>
-             <div className="space-y-2">
-                <Label htmlFor="github-url">GitHub Profile URL (Optional)</Label>
-                <div className="relative">
-                    <Input id="github-url" type="url" placeholder="https://github.com/yourusername" className="pl-12" />
-                    <div className="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
-                        <Github className="w-5 h-5 text-muted-foreground" />
-                    </div>
-                </div>
-            </div>
-             <div className="space-y-2">
-                <Label htmlFor="portfolio-url">Portfolio URL (Optional)</Label>
-                 <div className="relative">
-                    <Input id="portfolio-url" type="url" placeholder="https://yourportfolio.com" className="pl-12" />
-                    <div className="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
-                        <LinkIcon className="w-5 h-5 text-muted-foreground" />
-                    </div>
-                </div>
-            </div>
+            )}
+
             <div className="flex justify-end pt-4">
-                <Button type="submit" disabled={isPending}>
+                <Button type="submit" disabled={isPending || !file}>
                     {isPending && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
-                    Next: Review & Anchor <ArrowRight className="ml-2 h-4 w-4" />
+                    Continue <ArrowRight className="ml-2 h-4 w-4" />
                 </Button>
             </div>
         </form>
