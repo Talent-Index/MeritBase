@@ -9,15 +9,13 @@ export async function POST(req: NextRequest) {
 
   try {
     const { message, signature } = await req.json();
-
     const siweMessage = new SiweMessage(message);
-
-    const { success, data } = await siweMessage.verify({
+    const { data } = await siweMessage.verify({
       signature,
       nonce: session.nonce,
     });
 
-    if (!success || data.nonce !== session.nonce) {
+    if (data.nonce !== session.nonce) {
       return NextResponse.json({ message: 'Invalid nonce.' }, { status: 422 });
     }
 
@@ -27,6 +25,13 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ ok: true, address: data.address });
   } catch (error) {
     console.error(error);
+    // Return a more specific error if verification fails
+    if (error instanceof Error && error.message.includes('signature')) {
+       return NextResponse.json(
+        { ok: false, message: `Verification failed: ${error.message}` },
+        { status: 422 }
+      );
+    }
     return NextResponse.json(
       { ok: false, message: 'An internal server error occurred.' },
       { status: 500 }
