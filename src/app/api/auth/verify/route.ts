@@ -23,8 +23,8 @@ export async function POST(req: NextRequest) {
     await session.save();
 
     return NextResponse.json({ ok: true, address: data.address });
-  } catch (error) {
-    console.error(error);
+  } catch (error: any) {
+    console.error("Verification Error:", error);
     // Return a more specific error if verification fails
     if (error instanceof Error && error.message.includes('signature')) {
        return NextResponse.json(
