@@ -6,10 +6,13 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
-import { Bot, Loader2, Save, Wallet } from 'lucide-react';
+import { Bot, Check, Copy, Loader2, Save, Share2, Wallet } from 'lucide-react';
 import { useEffect, useState } from 'react';
 import { useToast } from '@/hooks/use-toast';
 import { cn } from '@/lib/utils';
+import { freelancers } from '@/lib/data';
+import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
+import { Input } from '@/components/ui/input';
 
 function SubmitButton() {
   const { pending } = useFormStatus();
@@ -26,6 +29,11 @@ export function CVWallet({ initialContent }: { initialContent: string }) {
   const [cvContent, setCvContent] = useState(initialContent);
   const [walletAddress, setWalletAddress] = useState<string | null>(null);
   const [isConnecting, setIsConnecting] = useState(false);
+  const [copied, setCopied] = useState(false);
+
+  // Assuming we're working with the first freelancer for this demo
+  const freelancerId = freelancers[0].id;
+  const publicCvUrl = `${window.location.origin}/freelancer/${freelancerId}`;
 
   const initialState: FormState = { message: '' };
   const [state, formAction] = useFormState(generateCvWalletAction, initialState);
@@ -45,8 +53,6 @@ export function CVWallet({ initialContent }: { initialContent: string }) {
 
   const handleConnectWallet = async () => {
     setIsConnecting(true);
-    // In a real app, you'd use a library like ethers.js or viem to connect to a wallet.
-    // For this example, we'll simulate a connection.
     try {
       if ((window as any).ethereum) {
         const accounts = await (window as any).ethereum.request({ method: 'eth_requestAccounts' });
@@ -72,6 +78,16 @@ export function CVWallet({ initialContent }: { initialContent: string }) {
         setIsConnecting(false);
     }
   }
+  
+  const handleCopy = () => {
+    navigator.clipboard.writeText(publicCvUrl);
+    setCopied(true);
+    setTimeout(() => setCopied(false), 2000);
+     toast({
+        title: "Copied to clipboard!",
+        description: "You can now share your CVWallet link.",
+      });
+  };
 
   return (
     <div className="grid md:grid-cols-2 gap-6">
@@ -135,9 +151,29 @@ export function CVWallet({ initialContent }: { initialContent: string }) {
                 <Save className="mr-2 h-4 w-4" />
                 Save & Sign to IPFS
             </Button>
-            {walletAddress && <p className={cn("text-xs font-mono p-2 rounded-md bg-muted text-muted-foreground", { 'border border-green-500 text-green-600 bg-green-500/10': walletAddress })}>
-              {walletAddress}
-            </p>}
+            <Popover>
+              <PopoverTrigger asChild>
+                 <Button>
+                    <Share2 className="mr-2 h-4 w-4" />
+                    Share CVWallet
+                </Button>
+              </PopoverTrigger>
+              <PopoverContent className="w-96">
+                <div className="space-y-2">
+                  <h4 className="font-medium leading-none">Share your public CVWallet</h4>
+                  <p className="text-sm text-muted-foreground">
+                    Anyone with this link can view your professional profile.
+                  </p>
+                </div>
+                <div className="flex items-center space-x-2 mt-4">
+                  <Input value={publicCvUrl} readOnly className="h-9" />
+                  <Button onClick={handleCopy} size="sm" className="px-3">
+                    <span className="sr-only">Copy</span>
+                    {copied ? <Check className="h-4 w-4" /> : <Copy className="h-4 w-4" />}
+                  </Button>
+                </div>
+              </PopoverContent>
+            </Popover>
         </CardFooter>
       </Card>
     </div>
