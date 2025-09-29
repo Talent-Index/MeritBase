@@ -9,7 +9,7 @@ export default function AuthLayout({
   return (
     <div className="flex flex-col min-h-screen">
         <Header />
-        <main className="flex-1 flex items-center justify-center py-12">
+        <main className="flex-1 flex items-center justify-center py-12 md:py-24">
             {children}
         </main>
         <Footer />
