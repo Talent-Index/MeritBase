@@ -1,3 +1,4 @@
+'use server';
 // @ts-nocheck
 // Disabling TypeScript checking for this file because we are dynamically reading JSON
 // files from the filesystem, which TypeScript cannot statically analyze.
