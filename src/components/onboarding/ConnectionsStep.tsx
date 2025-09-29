@@ -20,12 +20,24 @@ export default function ConnectionsStep() {
     const { toast } = useToast();
 
     const handleConnect = (platformName: string) => {
-        if (connected.includes(platformName)) {
-            setConnected(connected.filter(p => p !== platformName));
-             toast({ title: `${platformName} disconnected.` });
+        if (platformName === 'LinkedIn') {
+            // NOTE: Replace with your actual LinkedIn Client ID and Redirect URI
+            const LINKEDIN_CLIENT_ID = 'YOUR_LINKEDIN_CLIENT_ID';
+            const REDIRECT_URI = 'http://localhost:3000/linkedin/callback';
+            const STATE = 'some_random_state'; // It is recommended to generate a random state
+            
+            const scope = encodeURIComponent('profile openid');
+            const linkedinAuthUrl = `https://www.linkedin.com/oauth/v2/authorization?response_type=code&client_id=${LINKEDIN_CLIENT_ID}&redirect_uri=${encodeURIComponent(REDIRECT_URI)}&state=${STATE}&scope=${scope}`;
+            
+            window.location.href = linkedinAuthUrl;
         } else {
-            setConnected([...connected, platformName]);
-            toast({ title: `Simulating ${platformName} connection...`, description: "In a real app, this would open OAuth." });
+            if (connected.includes(platformName)) {
+                setConnected(connected.filter(p => p !== platformName));
+                 toast({ title: `${platformName} disconnected.` });
+            } else {
+                setConnected([...connected, platformName]);
+                toast({ title: `Simulating ${platformName} connection...`, description: "In a real app, this would open OAuth." });
+            }
         }
     }
 

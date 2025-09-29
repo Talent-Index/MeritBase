@@ -59,7 +59,6 @@ export default function RegisterStep() {
           title: "Registration Complete!",
           description: "Your professional identity is now on-chain.",
         });
-        localStorage.removeItem('freelancerProfile');
         localStorage.removeItem('freelancerVerification');
         router.push('/dashboard-freelancer');
     },
