@@ -1,4 +1,4 @@
-# MeritBase 🚀
+add # MeritBase 🚀
 **Decentralized Professional Identity & Gig Marketplace**
 
 MeritBase is a **Web3-powered platform** for freelancers and employers to connect in a **trustless, transparent, and fraud-resistant** way.  
