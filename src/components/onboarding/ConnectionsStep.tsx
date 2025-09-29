@@ -36,7 +36,7 @@ export default function ConnectionsStep() {
         setTimeout(() => {
             toast({
                 title: "Connections Saved!",
-                description: "Next, please upload your identity documents.",
+                description: "Next, please verify your identity.",
             });
             router.push('/signup-freelancer/documents');
             setIsPending(false);
@@ -69,7 +69,7 @@ export default function ConnectionsStep() {
                  </Button>
                  <Button type="submit" disabled={isPending} size="lg" className="bg-gradient-to-r from-purple-500 to-pink-500 text-white font-bold hover:opacity-90 transition-opacity">
                     {isPending && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
-                    Next: Documents <ArrowRight className="ml-2 h-4 w-4" />
+                    Next: Verification <ArrowRight className="ml-2 h-4 w-4" />
                 </Button>
             </div>
         </form>
