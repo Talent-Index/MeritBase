@@ -1,21 +1,22 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { generateNonce } from 'siwe';
-import { saveNonce, getNonce } from '@/lib/nonce-store';
+import { getIronSession } from 'iron-session';
+import { sessionOptions, SessionData } from '@/lib/session';
+import { cookies } from 'next/headers';
 
 export const dynamic = 'force-dynamic';
 
-export async function POST(req: NextRequest) {
+export async function GET(req: NextRequest) {
+  const session = await getIronSession<SessionData>(cookies(), sessionOptions);
   try {
-    const { address } = await req.json();
-    if (!address) {
-      return NextResponse.json({ message: 'Address is required.' }, { status: 400 });
-    }
     const nonce = generateNonce();
     if (!nonce) {
       console.error('Nonce generation failed: generateNonce() returned a falsy value.');
       return NextResponse.json({ message: 'Failed to generate nonce.' }, { status: 500 });
     }
-    saveNonce(address, nonce); // Save to our in-memory store
+    
+    session.nonce = nonce;
+    await session.save();
 
     return NextResponse.json({ nonce });
   } catch (error) {

@@ -72,11 +72,7 @@ export default function SignupEmployerPage() {
 
     setIsSigningIn(true);
     try {
-      const nonceRes = await fetch('/api/auth/nonce', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ address }),
-      });
+      const nonceRes = await fetch('/api/auth/nonce');
       if (!nonceRes.ok) throw new Error('Failed to fetch nonce.');
       const { nonce } = await nonceRes.json();
       
