@@ -14,6 +14,8 @@ import { popularSkills } from "@/lib/skills";
 import { Badge } from "@/components/ui/badge";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { cn } from "@/lib/utils";
+import { createUserWithEmailAndPassword } from "firebase/auth";
+import { auth } from "@/lib/firebase";
 
 export default function ProfileStep() {
   const [isPending, setIsPending] = useState(false);
@@ -22,6 +24,8 @@ export default function ProfileStep() {
   const [selectedSkills, setSelectedSkills] = useState<string[]>([]);
   const [customSkill, setCustomSkill] = useState("");
   const [showCustomInput, setShowCustomInput] = useState(false);
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
 
   const availableSkills = useMemo(() => {
     return popularSkills.filter(skill => !selectedSkills.includes(skill));
@@ -49,16 +53,23 @@ export default function ProfileStep() {
     event.preventDefault();
     setIsPending(true);
     
-    // Simulate API call
-    setTimeout(() => {
+    try {
+      await createUserWithEmailAndPassword(auth, email, password);
       toast({
         title: "Profile Step Complete!",
         description: "Your account has been created. Let's connect your other profiles.",
       });
-      
       router.push('/signup-freelancer/connections');
+    } catch (error: any) {
+      console.error("Firebase Auth Error:", error);
+      toast({
+        variant: "destructive",
+        title: "Signup Failed",
+        description: error.message || "An unexpected error occurred.",
+      });
+    } finally {
       setIsPending(false);
-    }, 1000);
+    }
   };
 
   return (
@@ -79,6 +90,8 @@ export default function ProfileStep() {
             type="email"
             placeholder="alice@example.com"
             required
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
           />
         </div>
         <div className="space-y-2">
@@ -88,6 +101,8 @@ export default function ProfileStep() {
             type="password"
             placeholder="••••••••"
             required
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
           />
         </div>
       </div>

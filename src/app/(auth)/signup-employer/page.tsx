@@ -15,6 +15,8 @@ import { FileUp, Loader2 } from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useState, type FormEvent } from "react";
+import { createUserWithEmailAndPassword } from "firebase/auth";
+import { auth } from "@/lib/firebase";
 
 
 export default function SignupEmployerPage() {
@@ -28,15 +30,23 @@ export default function SignupEmployerPage() {
     event.preventDefault();
     setIsPending(true);
     
-    // Simulate API call
-    setTimeout(() => {
+    try {
+      await createUserWithEmailAndPassword(auth, email, password);
       toast({
         title: "Account Created!",
         description: "You have successfully signed up as an employer.",
       });
       router.push('/dashboard-employer');
+    } catch (error: any) {
+      console.error("Firebase Auth Error:", error);
+      toast({
+        variant: "destructive",
+        title: "Signup Failed",
+        description: error.message || "An unexpected error occurred.",
+      });
+    } finally {
       setIsPending(false);
-    }, 1000);
+    }
   };
   
   return (
