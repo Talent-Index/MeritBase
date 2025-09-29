@@ -11,9 +11,9 @@ export async function POST(req: NextRequest) {
     const { message, signature } = await req.json();
 
     const siweMessage = new SiweMessage(message);
-    const { data: fields } = await siweMessage.verify({ 
-        signature,
-        nonce: session.nonce,
+    const { data: fields } = await siweMessage.verify({
+      signature,
+      nonce: session.nonce,
     });
 
     if (fields.nonce !== session.nonce) {
@@ -22,11 +22,13 @@ export async function POST(req: NextRequest) {
 
     session.siwe = fields;
     await session.save();
-    
-    return NextResponse.json({ ok: true, address: fields.address });
 
-  } catch (error)_ {
+    return NextResponse.json({ ok: true, address: fields.address });
+  } catch (error) {
     console.error(error);
-    return NextResponse.json({ ok: false, message: 'An internal server error occurred.' }, { status: 500 });
+    return NextResponse.json(
+      { ok: false, message: 'An internal server error occurred.' },
+      { status: 500 }
+    );
   }
 }
