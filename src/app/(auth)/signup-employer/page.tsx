@@ -15,30 +15,38 @@ import { useToast } from "@/hooks/use-toast";
 import { FileUp, Loader2, Wallet } from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useAccount, useSignMessage, useContractWrite, useWaitForTransaction } from "wagmi";
 import { SiweMessage } from 'siwe';
 import { ConnectButton } from "@/components/ConnectButton";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
-import { contracts } from "@/lib/contracts";
 
 export default function SignupEmployerPage() {
   const [isSigningIn, setIsSigningIn] = useState(false);
   const [companyName, setCompanyName] = useState("");
   const [workEmail, setWorkEmail] = useState("");
+  const [contracts, setContracts] = useState<any>(null);
   
   const { address, chainId, isConnected } = useAccount();
   const { signMessageAsync } = useSignMessage();
   const { toast } = useToast();
   const router = useRouter();
 
+  useEffect(() => {
+    // Dynamically import contracts on the client-side
+    import('@/lib/contracts').then(module => {
+      setContracts(module.contracts);
+    });
+  }, []);
+
   // In a real app, this would come from an IPFS upload.
   const licenseCid = "ipfs://bafybeigdyrzt5sfp7udm7hu76uh7y26nf3efuylqabf3oclgtqy55fbzdi";
 
-  const { data, write, isLoading: isContractWriteLoading } = useContractWrite({
-    address: contracts.EmployerRegistry.address,
-    abi: contracts.EmployerRegistry.abi,
+  const { data, write, isLoading: isContractWriteLoading, isError, error } = useContractWrite({
+    address: contracts?.EmployerRegistry.address,
+    abi: contracts?.EmployerRegistry.abi,
     functionName: 'registerEmployer',
+    enabled: !!contracts, // Only enable when contracts are loaded
   });
 
   const { isLoading: isTxLoading } = useWaitForTransaction({
@@ -107,6 +115,15 @@ export default function SignupEmployerPage() {
           title: "Authenticated!",
           description: "Please confirm the transaction to register your company.",
         });
+         if (!write) {
+            toast({
+                variant: "destructive",
+                title: "Contracts not loaded",
+                description: "The smart contract details could not be loaded. Please refresh and try again.",
+            });
+            if (isError) console.error("Contract write error:", error);
+            return;
+        }
         // Now call the smart contract
         write({
           args: [address, companyName, workEmail, licenseCid],

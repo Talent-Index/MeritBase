@@ -7,7 +7,6 @@ import { CheckCircle, Loader2 } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { useAccount, useContractWrite, useWaitForTransaction } from "wagmi";
-import { contracts } from "@/lib/contracts";
 import { keccak256, toHex } from "viem";
 
 interface ProfileData {
@@ -27,6 +26,7 @@ export default function RegisterStep() {
   const [isClient, setIsClient] = useState(false);
   const [profile, setProfile] = useState<ProfileData | null>(null);
   const [verification, setVerification] = useState<VerificationData | null>(null);
+  const [contracts, setContracts] = useState<any>(null);
   
   const { address, isConnected } = useAccount();
   const { toast } = useToast();
@@ -42,14 +42,21 @@ export default function RegisterStep() {
     if (verificationData) {
         setVerification(JSON.parse(verificationData));
     }
+    
+    // Dynamically import contracts on the client-side
+    import('@/lib/contracts').then(module => {
+        setContracts(module.contracts);
+    });
+
   }, []);
 
   const cvHash = profile ? keccak256(toHex(JSON.stringify(profile))) : '0x';
 
-  const { data, write, isLoading: isContractWriteLoading } = useContractWrite({
-    address: contracts.FreelancerRegistry.address,
-    abi: contracts.FreelancerRegistry.abi,
+  const { data, write, isLoading: isContractWriteLoading, isError, error } = useContractWrite({
+    address: contracts?.FreelancerRegistry.address,
+    abi: contracts?.FreelancerRegistry.abi,
     functionName: 'registerFreelancer',
+    enabled: !!contracts, // Only enable when contracts are loaded
   });
 
   const { isLoading: isTxLoading } = useWaitForTransaction({
@@ -59,6 +66,7 @@ export default function RegisterStep() {
           title: "Registration Complete!",
           description: "Your professional identity is now on-chain.",
         });
+        localStorage.removeItem('freelancerProfile');
         localStorage.removeItem('freelancerVerification');
         router.push('/dashboard-freelancer');
     },
@@ -80,6 +88,15 @@ export default function RegisterStep() {
         });
         return;
     }
+     if (!write) {
+        toast({
+            variant: "destructive",
+            title: "Contracts not loaded",
+            description: "The smart contract details could not be loaded. Please refresh and try again.",
+        });
+        if(isError) console.error("Contract write error:", error);
+        return;
+    }
     
     // In a real app, we would have CIDs for profile and CV.
     const profileCid = "ipfs://placeholder_profile_cid";
@@ -92,7 +109,7 @@ export default function RegisterStep() {
 
   const isPending = isContractWriteLoading || isTxLoading;
 
-  if (!isClient || !profile) {
+  if (!isClient || !profile || !contracts) {
     return (
         <div className="flex items-center justify-center h-40">
             <Loader2 className="h-8 w-8 animate-spin text-muted-foreground" />
