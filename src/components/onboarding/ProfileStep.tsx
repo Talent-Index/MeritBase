@@ -76,7 +76,12 @@ export default function ProfileStep() {
     
     setIsPending(true);
     try {
-      const nonceRes = await fetch('/api/auth/nonce');
+      // Fetch nonce from the server just-in-time
+      const nonceRes = await fetch('/api/auth/nonce', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ address }),
+      });
       if (!nonceRes.ok) throw new Error('Failed to fetch nonce.');
       const { nonce } = await nonceRes.json();
       
