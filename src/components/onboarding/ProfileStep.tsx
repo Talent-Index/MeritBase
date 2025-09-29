@@ -21,11 +21,14 @@ export default function ProfileStep() {
   const [isPending, setIsPending] = useState(false);
   const router = useRouter();
   const { toast } = useToast();
+
+  const [fullName, setFullName] = useState('');
+  const [displayName, setDisplayName] = useState('');
+  const [bio, setBio] = useState('');
   const [selectedSkills, setSelectedSkills] = useState<string[]>([]);
+  
   const [customSkill, setCustomSkill] = useState("");
   const [showCustomInput, setShowCustomInput] = useState(false);
-
-  const formRef = useRef<HTMLFormElement>(null);
 
   const { address, chainId } = useAccount();
   const { signMessageAsync } = useSignMessage();
@@ -55,19 +58,23 @@ export default function ProfileStep() {
   const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     setIsPending(true);
+    
+    const profileData = {
+        fullName,
+        displayName,
+        bio,
+        skills: selectedSkills,
+    };
 
-    if (!formRef.current) {
+    if (!fullName || !displayName || !bio || selectedSkills.length === 0) {
+        toast({
+            variant: "destructive",
+            title: "Incomplete Profile",
+            description: "Please fill out all fields and select at least one skill.",
+        });
         setIsPending(false);
         return;
     }
-    
-    const formData = new FormData(formRef.current);
-    const profileData = {
-        fullName: formData.get('fullName') as string,
-        displayName: formData.get('displayName') as string,
-        bio: formData.get('bio') as string,
-        skills: selectedSkills,
-    };
     
     try {
       const res = await fetch('/api/auth/nonce');
@@ -122,20 +129,41 @@ export default function ProfileStep() {
   };
 
   return (
-    <form ref={formRef} onSubmit={handleSubmit} className="space-y-6">
+    <form onSubmit={handleSubmit} className="space-y-6">
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         <div className="space-y-2">
           <Label htmlFor="fullName">Full Name</Label>
-          <Input id="fullName" name="fullName" placeholder="Alice Johnson" required />
+          <Input 
+            id="fullName" 
+            name="fullName" 
+            placeholder="Alice Johnson" 
+            required 
+            value={fullName}
+            onChange={(e) => setFullName(e.target.value)}
+          />
         </div>
         <div className="space-y-2">
           <Label htmlFor="displayName">Display Name</Label>
-          <Input id="displayName" name="displayName" placeholder="Alice" required />
+          <Input 
+            id="displayName" 
+            name="displayName" 
+            placeholder="Alice" 
+            required 
+            value={displayName}
+            onChange={(e) => setDisplayName(e.target.value)}
+          />
         </div>
       </div>
        <div className="space-y-2">
         <Label htmlFor="bio">Short Bio</Label>
-        <Textarea id="bio" name="bio" placeholder="Tell us a little about yourself..." required />
+        <Textarea 
+            id="bio" 
+            name="bio" 
+            placeholder="Tell us a little about yourself..." 
+            required 
+            value={bio}
+            onChange={(e) => setBio(e.target.value)}
+        />
       </div>
       <div className="space-y-3">
         <Label>Primary Skills</Label>
