@@ -11,19 +11,20 @@ export async function POST(req: NextRequest) {
     const { message, signature } = await req.json();
 
     const siweMessage = new SiweMessage(message);
-    const { data: fields } = await siweMessage.verify({
+
+    const { success, data } = await siweMessage.verify({
       signature,
       nonce: session.nonce,
     });
 
-    if (fields.nonce !== session.nonce) {
+    if (!success || data.nonce !== session.nonce) {
       return NextResponse.json({ message: 'Invalid nonce.' }, { status: 422 });
     }
 
-    session.siwe = fields;
+    session.siwe = data;
     await session.save();
 
-    return NextResponse.json({ ok: true, address: fields.address });
+    return NextResponse.json({ ok: true, address: data.address });
   } catch (error) {
     console.error(error);
     return NextResponse.json(
