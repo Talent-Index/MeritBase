@@ -11,8 +11,6 @@ import {
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { useToast } from "@/hooks/use-toast";
-import { auth } from "@/lib/firebase";
-import { createUserWithEmailAndPassword } from "firebase/auth";
 import { FileUp, Loader2 } from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
@@ -30,23 +28,15 @@ export default function SignupEmployerPage() {
     event.preventDefault();
     setIsPending(true);
     
-    try {
-      await createUserWithEmailAndPassword(auth, email, password);
+    // Simulate API call
+    setTimeout(() => {
       toast({
         title: "Account Created!",
         description: "You have successfully signed up as an employer.",
       });
       router.push('/dashboard-employer');
-    } catch (error: any) {
-      console.error("Signup error:", error);
-      toast({
-        variant: "destructive",
-        title: "Uh oh! Something went wrong.",
-        description: error.message || "There was a problem with your request.",
-      });
-    } finally {
       setIsPending(false);
-    }
+    }, 1000);
   };
   
   return (

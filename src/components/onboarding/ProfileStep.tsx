@@ -7,8 +7,6 @@ import { ArrowRight } from "lucide-react";
 import Link from "next/link";
 import { FormEvent, useState } from "react";
 import { useToast } from "@/hooks/use-toast";
-import { auth } from "@/lib/firebase";
-import { createUserWithEmailAndPassword } from "firebase/auth";
 import { useRouter } from "next/navigation";
 import { Loader2 } from "lucide-react";
 
@@ -23,12 +21,8 @@ export default function ProfileStep() {
     event.preventDefault();
     setIsPending(true);
     
-    try {
-      // For this step, we'll create the user in Firebase Auth.
-      // In a real multi-step flow, you'd collect all data first
-      // or create the user and then add data to Firestore/PostgreSQL.
-      await createUserWithEmailAndPassword(auth, email, password);
-      
+    // Simulate API call without Firebase
+    setTimeout(() => {
       toast({
         title: "Profile Step Complete!",
         description: "Your account has been created. Let's upload your documents.",
@@ -36,17 +30,8 @@ export default function ProfileStep() {
       
       // Navigate to the next step
       router.push('/signup-freelancer/documents');
-
-    } catch (error: any) {
-      console.error("Signup error:", error);
-      toast({
-        variant: "destructive",
-        title: "Uh oh! Something went wrong.",
-        description: error.message || "There was a problem with your request.",
-      });
-    } finally {
       setIsPending(false);
-    }
+    }, 1000);
   };
 
   return (
