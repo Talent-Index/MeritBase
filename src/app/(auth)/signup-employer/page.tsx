@@ -25,10 +25,15 @@ import { contracts } from "@/lib/contracts";
 export default function SignupEmployerPage() {
   const [isSigningIn, setIsSigningIn] = useState(false);
   const [companyName, setCompanyName] = useState("");
+  const [workEmail, setWorkEmail] = useState("");
+  
   const { address, chainId, isConnected } = useAccount();
   const { signMessageAsync } = useSignMessage();
   const { toast } = useToast();
   const router = useRouter();
+
+  // In a real app, this would come from an IPFS upload.
+  const licenseCid = "ipfs://bafybeigdyrzt5sfp7udm7hu76uh7y26nf3efuylqabf3oclgtqy55fbzdi";
 
   const { data, write, isLoading: isContractWriteLoading } = useContractWrite({
     address: contracts.EmployerRegistry.address,
@@ -56,11 +61,11 @@ export default function SignupEmployerPage() {
 
 
   const handleSignInAndRegister = async () => {
-    if (!companyName) {
+    if (!companyName || !workEmail) {
       toast({
         variant: "destructive",
-        title: "Company Name Required",
-        description: "Please enter your company's name.",
+        title: "All Fields Required",
+        description: "Please enter your company's name and work email.",
       });
       return;
     }
@@ -104,7 +109,7 @@ export default function SignupEmployerPage() {
         });
         // Now call the smart contract
         write({
-          args: [address, companyName, "hr@example.com", "ipfs://license_cid"], // Dummy data for now
+          args: [address, companyName, workEmail, licenseCid],
         });
       } else {
          throw new Error('Verification failed on server.');
@@ -151,7 +156,9 @@ export default function SignupEmployerPage() {
                 id="email" 
                 type="email" 
                 placeholder="hr@example.com" 
-                required 
+                required
+                value={workEmail}
+                onChange={(e) => setWorkEmail(e.target.value)}
               />
             </div>
             <div className="space-y-2">
