@@ -8,6 +8,7 @@ import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { useAccount, useContractWrite, useWaitForTransaction } from "wagmi";
 import { keccak256, toHex } from "viem";
+import { getContractInfo } from "@/app/actions";
 
 interface ProfileData {
     fullName: string;
@@ -26,7 +27,7 @@ export default function RegisterStep() {
   const [isClient, setIsClient] = useState(false);
   const [profile, setProfile] = useState<ProfileData | null>(null);
   const [verification, setVerification] = useState<VerificationData | null>(null);
-  const [contracts, setContracts] = useState<any>(null);
+  const [contractInfo, setContractInfo] = useState<{ address: `0x${string}`; abi: any } | null>(null);
   
   const { address, isConnected } = useAccount();
   const { toast } = useToast();
@@ -43,20 +44,20 @@ export default function RegisterStep() {
         setVerification(JSON.parse(verificationData));
     }
     
-    // Dynamically import contracts on the client-side
-    import('@/lib/contracts').then(module => {
-        setContracts(module.contracts);
-    });
+    async function fetchContractInfo() {
+      const info = await getContractInfo('FreelancerRegistry');
+      setContractInfo(info);
+    }
+    fetchContractInfo();
 
   }, []);
 
   const cvHash = profile ? keccak256(toHex(JSON.stringify(profile))) : '0x';
 
   const { data, write, isLoading: isContractWriteLoading, isError, error } = useContractWrite({
-    address: contracts?.FreelancerRegistry.address,
-    abi: contracts?.FreelancerRegistry.abi,
+    address: contractInfo?.address,
+    abi: contractInfo?.abi,
     functionName: 'registerFreelancer',
-    enabled: !!contracts, // Only enable when contracts are loaded
   });
 
   const { isLoading: isTxLoading } = useWaitForTransaction({
@@ -109,7 +110,7 @@ export default function RegisterStep() {
 
   const isPending = isContractWriteLoading || isTxLoading;
 
-  if (!isClient || !profile || !contracts) {
+  if (!isClient || !profile || !contractInfo) {
     return (
         <div className="flex items-center justify-center h-40">
             <Loader2 className="h-8 w-8 animate-spin text-muted-foreground" />

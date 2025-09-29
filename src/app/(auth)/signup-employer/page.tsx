@@ -20,12 +20,13 @@ import { useAccount, useSignMessage, useContractWrite, useWaitForTransaction } f
 import { SiweMessage } from 'siwe';
 import { ConnectButton } from "@/components/ConnectButton";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
+import { getContractInfo } from "@/app/actions";
 
 export default function SignupEmployerPage() {
   const [isSigningIn, setIsSigningIn] = useState(false);
   const [companyName, setCompanyName] = useState("");
   const [workEmail, setWorkEmail] = useState("");
-  const [contracts, setContracts] = useState<any>(null);
+  const [contractInfo, setContractInfo] = useState<{ address: `0x${string}`; abi: any } | null>(null);
   
   const { address, chainId, isConnected } = useAccount();
   const { signMessageAsync } = useSignMessage();
@@ -33,20 +34,20 @@ export default function SignupEmployerPage() {
   const router = useRouter();
 
   useEffect(() => {
-    // Dynamically import contracts on the client-side
-    import('@/lib/contracts').then(module => {
-      setContracts(module.contracts);
-    });
+    async function fetchContractInfo() {
+      const info = await getContractInfo('EmployerRegistry');
+      setContractInfo(info);
+    }
+    fetchContractInfo();
   }, []);
 
   // In a real app, this would come from an IPFS upload.
   const licenseCid = "ipfs://bafybeigdyrzt5sfp7udm7hu76uh7y26nf3efuylqabf3oclgtqy55fbzdi";
 
   const { data, write, isLoading: isContractWriteLoading, isError, error } = useContractWrite({
-    address: contracts?.EmployerRegistry.address,
-    abi: contracts?.EmployerRegistry.abi,
+    address: contractInfo?.address,
+    abi: contractInfo?.abi,
     functionName: 'registerEmployer',
-    enabled: !!contracts, // Only enable when contracts are loaded
   });
 
   const { isLoading: isTxLoading } = useWaitForTransaction({
@@ -203,7 +204,7 @@ export default function SignupEmployerPage() {
         )}
         </CardContent>
         <CardFooter className="flex flex-col gap-4">
-          <Button className="w-full" onClick={handleSignInAndRegister} disabled={isPending || !isConnected}>
+          <Button className="w-full" onClick={handleSignInAndRegister} disabled={isPending || !isConnected || !contractInfo}>
             {isPending && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
             {isSigningIn ? "Signing In..." : isContractWriteLoading ? "Waiting for Approval..." : isTxLoading ? "Registering..." : "Sign In & Register Company"}
           </Button>
