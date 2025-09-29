@@ -21,14 +21,12 @@ export default function ProfileStep() {
     event.preventDefault();
     setIsPending(true);
     
-    // Simulate API call without Firebase
     setTimeout(() => {
       toast({
         title: "Profile Step Complete!",
         description: "Your account has been created. Let's upload your documents.",
       });
       
-      // Navigate to the next step
       router.push('/signup-freelancer/documents');
       setIsPending(false);
     }, 1000);
@@ -77,14 +75,14 @@ export default function ProfileStep() {
         <Textarea id="bio" placeholder="Tell us a little about yourself..." required />
       </div>
       <div className="flex justify-end pt-4">
-        <Button type="submit" disabled={isPending}>
+        <Button type="submit" disabled={isPending} size="lg" className="bg-gradient-to-r from-purple-500 to-pink-500 text-white font-bold hover:opacity-90 transition-opacity">
             {isPending && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
             Next: Documents <ArrowRight className="ml-2 h-4 w-4" />
         </Button>
       </div>
        <p className="text-xs text-center text-muted-foreground pt-4">
             Already have an account?{" "}
-            <Link href="/dashboard-freelancer" className="underline hover:text-primary">
+            <Link href="/dashboard-freelancer" className="text-purple-400 hover:underline">
                 Login
             </Link>
         </p>

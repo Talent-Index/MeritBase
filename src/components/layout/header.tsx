@@ -13,11 +13,11 @@ export default function Header() {
   ];
 
   return (
-    <header className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
+    <header className="sticky top-0 z-50 w-full border-b border-white/10 bg-background/80 backdrop-blur supports-[backdrop-filter]:bg-background/60">
       <div className="container flex h-14 items-center">
         <div className="mr-4 hidden md:flex">
           <Link href="/" className="mr-6 flex items-center space-x-2">
-            <Logo className="h-6 w-6 text-primary" />
+            <Logo className="h-6 w-6 text-purple-400" />
             <span className="hidden font-bold sm:inline-block font-headline">
               MeritBase
             </span>
@@ -49,7 +49,7 @@ export default function Header() {
           </SheetTrigger>
           <SheetContent side="left" className="pr-0">
             <Link href="/" className="mr-6 flex items-center space-x-2">
-                <Logo className="h-6 w-6 text-primary" />
+                <Logo className="h-6 w-6 text-purple-400" />
                 <span className="font-bold font-headline">
                 MeritBase
                 </span>
@@ -80,7 +80,7 @@ export default function Header() {
             <Button variant="ghost" asChild>
                 <Link href="/dashboard-freelancer">Login</Link>
             </Button>
-            <Button asChild>
+            <Button asChild className="bg-gradient-to-r from-purple-500 to-pink-500 text-white hover:opacity-90 transition-opacity">
               <Link href="/signup-freelancer">Sign Up</Link>
             </Button>
           </nav>
