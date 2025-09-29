@@ -139,16 +139,25 @@ export default function DocumentsStep() {
             });
             return;
         }
-        setIsPending(true);
+        
+        // In a real app, we'd upload these to IPFS and get CIDs.
+        // For now, we'll save placeholders to localStorage.
+        const verificationData = {
+            govIdFrontCid: 'ipfs://placeholder_front_id',
+            govIdBackCid: 'ipfs://placeholder_back_id',
+            selfieCid: 'ipfs://placeholder_selfie',
+        };
+        localStorage.setItem('freelancerVerification', JSON.stringify(verificationData));
 
+        setIsPending(true);
         setTimeout(() => {
             toast({
-                title: "Verification Submitted!",
-                description: "Your identity is being verified. You will be redirected to your dashboard.",
+                title: "Identity Verified!",
+                description: "Just one more step to register on-chain.",
             });
-            router.push('/dashboard-freelancer');
+            router.push('/signup-freelancer/register');
             setIsPending(false);
-        }, 1500);
+        }, 1000);
     };
 
     const progressValue = { front: 25, back: 50, selfie: 75, done: 100 }[currentStep];
@@ -198,7 +207,7 @@ export default function DocumentsStep() {
                 >
                     {isPending && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
                     {currentStep === 'selfie' ? (
-                        <>Submit Verification <UserCheck className="ml-2 h-4 w-4" /></>
+                        <>Complete Verification <UserCheck className="ml-2 h-4 w-4" /></>
                     ) : (
                         <>Next Step <ArrowRight className="ml-2 h-4 w-4" /></>
                     )}
