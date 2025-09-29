@@ -1,56 +1,70 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { CheckCircle, Database, FileText, Fingerprint, Lock, Scale, Telescope } from "lucide-react";
+import { CheckCircle, Database, FileText, Fingerprint, Lock, Scale, Telescope, Bot, Cloud } from "lucide-react";
 
 const architecturePoints = [
   {
     icon: Fingerprint,
-    title: "On-Chain Storage (Polygon)",
-    subtitle: "The Source of Truth",
-    description: "The blockchain is used for what it does best: providing an immutable, publicly verifiable ledger. We only store minimal, high-integrity data like registry entries (who is a verified freelancer/employer), cryptographic hashes (proofs) of CVs, and event logs. Raw files are never stored on-chain.",
-    tags: ["Hashes", "Attestations", "Registry Entries", "Events"],
+    title: "On-Chain Storage (Polygon Amoy)",
+    subtitle: "The Source of Truth on a Testnet",
+    description: "We use the Polygon Amoy testnet for our smart contracts. It's free to use but functions exactly like the mainnet. We only store essential, high-integrity data: keccak256 hashes of CVs, registry entries for freelancers/employers, and event logs. Storing only small proofs (hashes) instead of raw files keeps gas costs zero on the testnet and minimal on mainnet, ensuring the blockchain is used for its core strength: immutable verification.",
+    tags: ["Polygon Amoy", "keccak256 Hashes", "Registry Entries", "Free Gas"],
   },
   {
     icon: FileText,
-    title: "Off-Chain Decentralized Storage (IPFS/Filecoin)",
-    subtitle: "Secure & Portable Data",
-    description: "Documents like CVs, government IDs, and portfolios are encrypted on the user's device (client-side) before being pinned to IPFS. The smart contract only references the content identifier (CID). This keeps sensitive data private and portable while ensuring it's securely stored in a decentralized manner.",
-    tags: ["Client-Side Encryption", "IPFS CIDs", "Data Portability"],
+    title: "Off-Chain Storage (Free IPFS)",
+    subtitle: "Secure & Decentralized File Hosting",
+    description: "Documents like CVs and government IDs are encrypted on your device (client-side) before being pinned to IPFS via free services like Web3.Storage or Pinata's free tier. The smart contract only stores the content identifier (CID). This keeps sensitive data private and leverages the power of decentralized storage without cost, ensuring your files are secure and censorship-resistant.",
+    tags: ["Client-Side Encryption", "Web3.Storage", "IPFS CIDs", "$0 Cost"],
   },
   {
     icon: Database,
-    title: "Database / Indexer Storage (PostgreSQL)",
-    subtitle: "Performance & Search",
-    description: "A traditional database is used for data that requires fast queries, searching, and indexing. This includes user profiles, job listings, search indices, and AI model embeddings for our matching engine. The database acts as a performant layer that can be rebuilt from on-chain events, always treating the blockchain as the ultimate source of truth.",
-    tags: ["Fast Queries", "AI Embeddings", "Caching", "Search Index"],
+    title: "Database Cache (Supabase Free Tier)",
+    subtitle: "Performance & Search on a Budget",
+    description: "A free-tier PostgreSQL database from Supabase is used for data that needs fast queries, like user profiles, job listings, and search indexes. This layer acts as a performant cache that can be rebuilt from on-chain events, treating the blockchain as the ultimate source of truth. This hybrid model gives us high-speed performance for the app's UI without compromising on decentralization.",
+    tags: ["Supabase (Free)", "PostgreSQL", "Fast Queries", "Caching Layer"],
   },
   {
     icon: Lock,
-    title: "Encryption & Privacy",
-    subtitle: "User-Controlled Data",
-    description: "Sensitive documents are encrypted client-side using AES-GCM before upload. This means MeritBase servers never have access to your unencrypted private files. Only cryptographic proofs (hashes and CIDs) are public, ensuring your privacy is paramount.",
-    tags: ["AES-GCM Encryption", "Data Minimization", "Privacy-by-Design"],
+    title: "Encryption & Privacy-First",
+    subtitle: "User-Controlled Data Security",
+    description: "Your sensitive documents are encrypted client-side using the robust AES-GCM algorithm before they ever leave your browser. This means MeritBase servers never see your unencrypted files. Only the resulting cryptographic proofs (hashes and CIDs) are made public, ensuring your privacy is maintained by default.",
+    tags: ["AES-GCM Encryption", "Zero-Knowledge", "Privacy-by-Design"],
   },
   {
     icon: CheckCircle,
     title: "Verification & Immutability",
-    subtitle: "Anchoring Trust",
-    description: "To prevent tampering, a keccak256 hash of your CV's metadata is calculated and stored on-chain. This creates a permanent, timestamped anchor. Anyone can independently verify the authenticity of a CV by hashing the file and comparing it to the on-chain proof, ensuring the document hasn't been altered.",
+    subtitle: "Anchoring Trust On-Chain",
+    description: "To prevent tampering, a keccak256 hash of your CV's metadata is calculated and stored on-chain. This creates a permanent, timestamped anchor. Anyone can independently verify a CV's authenticity by hashing the file and comparing it to the on-chain proof, ensuring the document is legitimate and unaltered.",
     tags: ["keccak256 Hash", "Integrity Check", "Timestamping"],
   },
   {
     icon: Scale,
     title: "Scalability & Cost-Efficiency",
-    subtitle: "The Hybrid Advantage",
-    description: "Storing large files on-chain is prohibitively expensive and slow. Our hybrid model is designed for efficiency. It minimizes gas fees by only storing small proofs on Polygon, leverages the low cost of IPFS for file storage, and uses a database for high-speed application performance. This provides the best of all worlds: decentralization, security, and a great user experience.",
-    tags: ["Low Gas Fees", "High Performance", "Decentralized Security"],
+    subtitle: "The Bootstrapper's Advantage",
+    description: "This hybrid model is designed for maximum efficiency on a zero budget. It leverages free testnet transactions, free IPFS pinning, and free-tier databases. This provides the best of all worlds for an MVP: the security of decentralization, high performance for a great user experience, and zero operational costs, allowing us to scale the user base before needing to upgrade infrastructure.",
+    tags: ["$0 MVP", "High Performance", "Scalable Design"],
+  },
+  {
+    icon: Bot,
+    title: "AI Matching (HuggingFace Free Tier)",
+    subtitle: "Intelligent Matching, No Cost",
+    description: "We use free-tier sentence transformer models from HuggingFace to create vector embeddings for job descriptions and freelancer CVs. By calculating the cosine similarity between these embeddings, we can generate a highly relevant 'fit score' and shortlist the best candidates for a role—all without the cost of a dedicated AI service.",
+    tags: ["HuggingFace", "Embeddings", "Cosine Similarity", "Free AI"],
+  },
+  {
+    icon: Cloud,
+    title: "Hosting (Vercel & Render)",
+    subtitle: "Globally Distributed Frontend & Backend",
+    description: "The Next.js frontend is hosted on Vercel's generous free tier, providing a global CDN, automatic scaling, and CI/CD. The backend API routes are deployed on Render's free tier, which is perfect for handling our off-chain logic like IPFS pinning and AI matching. This stack is powerful, scalable, and completely free to start.",
+    tags: ["Vercel", "Render", "Serverless", "Free Hosting"],
   },
   {
     icon: Telescope,
-    title: "Future Extensions",
-    subtitle: "Building on the Foundation",
-    description: "This architecture is built to evolve. Future enhancements could include using The Graph for more complex event indexing, Arweave for permanent, one-time-fee storage of critical documents, and ZK-proofs to enable privacy-preserving attestations where you can prove something (e.g., 'I am verified') without revealing the underlying data.",
-    tags: ["The Graph", "Arweave", "ZK-Proofs", "Privacy Tech"],
+    title: "Future-Proof Architecture",
+    subtitle: "Building on a Strong Foundation",
+    description: "This architecture is built to evolve. As MeritBase grows, we can seamlessly transition from testnet to Polygon mainnet, upgrade our database and IPFS plans, and integrate more advanced tools like The Graph for indexing, Arweave for permanent storage, or ZK-proofs for privacy-preserving attestations without needing to re-architect the core logic.",
+    tags: ["The Graph", "Arweave", "ZK-Proofs", "Evolvable"],
   }
 ];
 
@@ -61,10 +75,10 @@ export default function ArchitecturePage() {
       <main className="container mx-auto max-w-5xl py-12 md:py-20 px-4">
         <div className="text-center mb-12">
           <h1 className="text-4xl font-bold tracking-tighter sm:text-5xl font-headline">
-            MeritBase Data Architecture
+            MeritBase Architecture: A $0-Budget Web3 MVP
           </h1>
           <p className="mt-4 max-w-3xl mx-auto text-muted-foreground md:text-xl">
-            A hybrid model for security, performance, and decentralization. We combine the strengths of on-chain, off-chain, and traditional storage to build a trustworthy and efficient platform.
+            How we built a secure, decentralized, and scalable platform with a real Web3 feel on a zero-dollar budget. This hybrid model combines the strengths of on-chain proofs, decentralized storage, and free-tier cloud services.
           </p>
         </div>
 
