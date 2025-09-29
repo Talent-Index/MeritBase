@@ -90,7 +90,10 @@ export default function SignupEmployerPage() {
         body: JSON.stringify({ message, signature }),
       });
 
-      if (!verifyRes.ok) throw new Error('Failed to verify signature.');
+      if (!verifyRes.ok) {
+        const errorData = await verifyRes.json();
+        throw new Error(errorData.message || 'Failed to verify signature.');
+      }
       
       const { ok } = await verifyRes.json();
       if(ok) {
