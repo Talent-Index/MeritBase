@@ -65,10 +65,11 @@ export default function SignupEmployerPage() {
       return;
     }
 
+    setIsSigningIn(true);
     try {
-      setIsSigningIn(true);
-      const res = await fetch('/api/auth/nonce');
-      const { nonce } = await res.json();
+      const nonceRes = await fetch('/api/auth/nonce');
+      if (!nonceRes.ok) throw new Error('Failed to fetch nonce.');
+      const { nonce } = await nonceRes.json();
       
       const message = new SiweMessage({
         domain: window.location.host,

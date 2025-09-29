@@ -1,3 +1,4 @@
+
 'use client';
 import OnboardingLayout from "@/components/onboarding/OnboardingLayout";
 import ProfileStep from "@/components/onboarding/ProfileStep";
@@ -6,6 +7,7 @@ import { useAccount } from "wagmi";
 import { ConnectButton } from "@/components/ConnectButton";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { Wallet } from "lucide-react";
+import { generateCvWallet } from "@/ai/flows/generate-cv-wallet-from-prompt";
 
 export default function SignupFreelancerPage() {
   const { isConnected } = useAccount();

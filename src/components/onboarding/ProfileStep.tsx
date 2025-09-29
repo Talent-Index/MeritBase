@@ -57,7 +57,6 @@ export default function ProfileStep() {
 
   const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-    setIsPending(true);
     
     const profileData = {
         fullName,
@@ -72,14 +71,17 @@ export default function ProfileStep() {
             title: "Incomplete Profile",
             description: "Please fill out all fields and select at least one skill.",
         });
-        setIsPending(false);
         return;
     }
     
+    setIsPending(true);
     try {
-      const res = await fetch('/api/auth/nonce');
-      const { nonce } = await res.json();
+      // 1. Fetch a new nonce *right before* signing
+      const nonceRes = await fetch('/api/auth/nonce');
+      if (!nonceRes.ok) throw new Error('Failed to fetch nonce.');
+      const { nonce } = await nonceRes.json();
       
+      // 2. Create the SIWE message with the fresh nonce
       const message = new SiweMessage({
         domain: window.location.host,
         address,
@@ -90,10 +92,12 @@ export default function ProfileStep() {
         nonce,
       });
 
+      // 3. Ask the user to sign the message
       const signature = await signMessageAsync({
         message: message.prepareMessage(),
       });
 
+      // 4. Send the signature and message to the server for verification
       const verifyRes = await fetch('/api/auth/verify', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -108,7 +112,6 @@ export default function ProfileStep() {
       const { ok } = await verifyRes.json();
 
       if(ok) {
-        // Save profile data to localStorage to persist it across steps
         localStorage.setItem('freelancerProfile', JSON.stringify(profileData));
         
         toast({
