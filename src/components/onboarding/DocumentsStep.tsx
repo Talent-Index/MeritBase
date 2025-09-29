@@ -1,10 +1,11 @@
+
 'use client';
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { ArrowRight, Loader2, UploadCloud, File, X } from "lucide-react";
 import { useRouter } from "next/navigation";
-import { FormEvent, useState, useCallback, useRef } from "react";
+import { FormEvent, useState, useRef } from "react";
 import { useToast } from "@/hooks/use-toast";
 import { cn } from "@/lib/utils";
 
@@ -75,9 +76,9 @@ export default function DocumentsStep() {
         setTimeout(() => {
             toast({
                 title: "Documents Uploaded!",
-                description: "Next, you'll review and anchor your CVWallet on-chain.",
+                description: "Next, let's confirm your identity with a quick selfie.",
             });
-            router.push('/dashboard-freelancer');
+            router.push('/signup-freelancer/selfie');
             setIsPending(false);
         }, 1500);
     };
@@ -148,9 +149,9 @@ export default function DocumentsStep() {
             )}
 
             <div className="flex justify-end pt-4">
-                <Button type="submit" disabled={isPending || !file}>
+                 <Button type="submit" disabled={isPending || !file} size="lg" className="bg-gradient-to-r from-purple-500 to-pink-500 text-white font-bold hover:opacity-90 transition-opacity">
                     {isPending && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
-                    Continue <ArrowRight className="ml-2 h-4 w-4" />
+                    Next: Liveness Check <ArrowRight className="ml-2 h-4 w-4" />
                 </Button>
             </div>
         </form>

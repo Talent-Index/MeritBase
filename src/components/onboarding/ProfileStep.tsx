@@ -1,3 +1,4 @@
+
 'use client';
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -12,15 +13,14 @@ import { Loader2 } from "lucide-react";
 
 export default function ProfileStep() {
   const [isPending, setIsPending] = useState(false);
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
-  const { toast } = useToast();
   const router = useRouter();
+  const { toast } = useToast();
 
   const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     setIsPending(true);
     
+    // Simulate API call
     setTimeout(() => {
       toast({
         title: "Profile Step Complete!",
@@ -50,8 +50,6 @@ export default function ProfileStep() {
             type="email"
             placeholder="alice@example.com"
             required
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
           />
         </div>
         <div className="space-y-2">
@@ -61,8 +59,6 @@ export default function ProfileStep() {
             type="password"
             placeholder="••••••••"
             required
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
           />
         </div>
       </div>
