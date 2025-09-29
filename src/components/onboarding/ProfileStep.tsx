@@ -98,26 +98,40 @@ export default function ProfileStep() {
       <div className="space-y-3">
         <Label>Primary Skills</Label>
         <div className="p-3 border rounded-lg bg-background/50">
-           <div className="flex flex-wrap gap-2 mb-3 min-h-[2.5rem] items-center">
-              {selectedSkills.map(skill => (
-                <Badge key={skill} variant="secondary" className="text-base py-1 px-3">
-                  {skill}
-                  <button type="button" onClick={() => handleRemoveSkill(skill)} className="ml-2 rounded-full hover:bg-muted-foreground/20 p-0.5">
-                    <X className="h-3 w-3" />
-                  </button>
-                </Badge>
-              ))}
-              {showCustomInput && (
-                 <div className="flex items-center gap-2">
-                    <Input 
-                        value={customSkill} 
-                        onChange={(e) => setCustomSkill(e.target.value)}
-                        placeholder="Your skill..."
-                        className="h-8"
-                    />
-                    <Button type="button" size="sm" onClick={handleAddCustomSkill}>Add</Button>
-                 </div>
-              )}
+           <div className="flex items-center gap-2 mb-3">
+             <ScrollArea className="h-20 w-full">
+                <div className="flex flex-wrap gap-2 items-center">
+                    {selectedSkills.map(skill => (
+                        <Badge key={skill} variant="secondary" className="text-xs py-1 px-2">
+                        {skill}
+                        <button type="button" onClick={() => handleRemoveSkill(skill)} className="ml-2 rounded-full hover:bg-muted-foreground/20 p-0.5">
+                            <X className="h-3 w-3" />
+                        </button>
+                        </Badge>
+                    ))}
+                    {showCustomInput && (
+                        <div className="flex items-center gap-2">
+                            <Input 
+                                value={customSkill} 
+                                onChange={(e) => setCustomSkill(e.target.value)}
+                                placeholder="Your skill..."
+                                className="h-7 text-xs"
+                            />
+                            <Button type="button" size="sm" onClick={handleAddCustomSkill} className="h-7">Add</Button>
+                        </div>
+                    )}
+                </div>
+             </ScrollArea>
+             <button
+                type="button"
+                onClick={() => setShowCustomInput(true)}
+                className={cn(
+                    "px-3 py-1 text-sm border rounded-full hover:border-primary hover:bg-primary/10 transition-colors flex items-center gap-1 shrink-0",
+                    { 'hidden': showCustomInput }
+                )}
+            >
+              <Plus className="h-4 w-4" /> Add Skill
+            </button>
            </div>
            <ScrollArea className="h-40">
               <div className="flex flex-wrap gap-2">
@@ -126,21 +140,11 @@ export default function ProfileStep() {
                         type="button"
                         key={skill}
                         onClick={() => handleSelectSkill(skill)}
-                        className="px-3 py-1 text-sm border rounded-full hover:border-primary hover:bg-primary/10 transition-colors"
+                        className="px-3 py-1 text-xs border rounded-full hover:border-primary hover:bg-primary/10 transition-colors"
                     >
                       {skill}
                     </button>
                   ))}
-                   <button
-                        type="button"
-                        onClick={() => setShowCustomInput(true)}
-                        className={cn(
-                            "px-3 py-1 text-sm border rounded-full hover:border-primary hover:bg-primary/10 transition-colors flex items-center gap-1",
-                            { 'hidden': showCustomInput }
-                        )}
-                    >
-                      <Plus className="h-4 w-4" /> Add Skill
-                    </button>
               </div>
            </ScrollArea>
         </div>
