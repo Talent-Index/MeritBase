@@ -4,17 +4,46 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
-import { ArrowRight } from "lucide-react";
+import { ArrowRight, Plus, X } from "lucide-react";
 import Link from "next/link";
-import { FormEvent, useState } from "react";
+import { FormEvent, useState, useMemo } from "react";
 import { useToast } from "@/hooks/use-toast";
 import { useRouter } from "next/navigation";
 import { Loader2 } from "lucide-react";
+import { popularSkills } from "@/lib/skills";
+import { Badge } from "@/components/ui/badge";
+import { ScrollArea } from "@/components/ui/scroll-area";
+import { cn } from "@/lib/utils";
 
 export default function ProfileStep() {
   const [isPending, setIsPending] = useState(false);
   const router = useRouter();
   const { toast } = useToast();
+  const [selectedSkills, setSelectedSkills] = useState<string[]>([]);
+  const [customSkill, setCustomSkill] = useState("");
+  const [showCustomInput, setShowCustomInput] = useState(false);
+
+  const availableSkills = useMemo(() => {
+    return popularSkills.filter(skill => !selectedSkills.includes(skill));
+  }, [selectedSkills]);
+
+  const handleSelectSkill = (skill: string) => {
+    if (!selectedSkills.includes(skill)) {
+      setSelectedSkills([...selectedSkills, skill]);
+    }
+  };
+
+  const handleRemoveSkill = (skillToRemove: string) => {
+    setSelectedSkills(selectedSkills.filter(skill => skill !== skillToRemove));
+  };
+
+  const handleAddCustomSkill = () => {
+    if (customSkill && !selectedSkills.includes(customSkill)) {
+      setSelectedSkills([...selectedSkills, customSkill]);
+      setCustomSkill("");
+      setShowCustomInput(false);
+    }
+  };
 
   const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
@@ -62,13 +91,59 @@ export default function ProfileStep() {
           />
         </div>
       </div>
-      <div className="space-y-2">
-        <Label htmlFor="skills">Primary Skills (comma-separated)</Label>
-        <Input id="skills" placeholder="Solidity, Next.js, React" required />
-      </div>
        <div className="space-y-2">
         <Label htmlFor="bio">Short Bio</Label>
         <Textarea id="bio" placeholder="Tell us a little about yourself..." required />
+      </div>
+      <div className="space-y-3">
+        <Label>Primary Skills</Label>
+        <div className="p-3 border rounded-lg bg-background/50">
+           <div className="flex flex-wrap gap-2 mb-3 min-h-[2.5rem] items-center">
+              {selectedSkills.map(skill => (
+                <Badge key={skill} variant="secondary" className="text-base py-1 px-3">
+                  {skill}
+                  <button type="button" onClick={() => handleRemoveSkill(skill)} className="ml-2 rounded-full hover:bg-muted-foreground/20 p-0.5">
+                    <X className="h-3 w-3" />
+                  </button>
+                </Badge>
+              ))}
+              {showCustomInput && (
+                 <div className="flex items-center gap-2">
+                    <Input 
+                        value={customSkill} 
+                        onChange={(e) => setCustomSkill(e.target.value)}
+                        placeholder="Your skill..."
+                        className="h-8"
+                    />
+                    <Button type="button" size="sm" onClick={handleAddCustomSkill}>Add</Button>
+                 </div>
+              )}
+           </div>
+           <ScrollArea className="h-40">
+              <div className="flex flex-wrap gap-2">
+                  {availableSkills.map(skill => (
+                    <button
+                        type="button"
+                        key={skill}
+                        onClick={() => handleSelectSkill(skill)}
+                        className="px-3 py-1 text-sm border rounded-full hover:border-primary hover:bg-primary/10 transition-colors"
+                    >
+                      {skill}
+                    </button>
+                  ))}
+                   <button
+                        type="button"
+                        onClick={() => setShowCustomInput(true)}
+                        className={cn(
+                            "px-3 py-1 text-sm border rounded-full hover:border-primary hover:bg-primary/10 transition-colors flex items-center gap-1",
+                            { 'hidden': showCustomInput }
+                        )}
+                    >
+                      <Plus className="h-4 w-4" /> Add Skill
+                    </button>
+              </div>
+           </ScrollArea>
+        </div>
       </div>
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between pt-4 gap-4">
          <p className="text-xs text-muted-foreground">
