@@ -3,62 +3,52 @@ pragma solidity ^0.8.24;
 
 contract FreelancerRegistry {
     struct Freelancer {
-        address owner;
+        address walletAddress;
         string displayName;
-        string profileCid; // IPFS CID for the public profile JSON
-        bytes32 cvHash; // keccak256 hash of the canonical CV metadata
-        string govIdCid; // IPFS CID for the encrypted government ID
-        uint256 registeredAt;
+        string profileCid; // IPFS CID for profile data
+        bytes32 cvHash; // keccak256 hash of CV content
+        string govIdCid; // IPFS CID for government ID
+        bool isRegistered;
     }
 
     mapping(address => Freelancer) public freelancers;
-    address[] public freelancerList;
+    address[] public freelancerAddresses;
 
-    event FreelancerRegistered(address indexed owner, bytes32 indexed cvHash, string profileCid, uint256 ts);
-    event FreelancerUpdated(address indexed owner, bytes32 indexed cvHash, string profileCid, uint256 ts);
+    event FreelancerRegistered(address indexed walletAddress, string displayName, string profileCid);
 
-    modifier onlyRegisteredFreelancer() {
-        require(freelancers[msg.sender].owner != address(0), "Freelancer not registered");
-        _;
-    }
+    function registerFreelancer(
+        address _walletAddress,
+        string memory _displayName,
+        string memory _profileCid,
+        bytes32 _cvHash,
+        string memory _govIdCid
+    ) public {
+        require(!freelancers[_walletAddress].isRegistered, "Freelancer already registered");
 
-    function registerFreelancer(string calldata displayName, string calldata profileCid, bytes32 cvHash, string calldata govIdCid) external returns (bool) {
-        require(bytes(displayName).length > 0, "Display name cannot be empty");
-        require(freelancers[msg.sender].owner == address(0), "Freelancer already registered");
-
-        freelancers[msg.sender] = Freelancer({
-            owner: msg.sender,
-            displayName: displayName,
-            profileCid: profileCid,
-            cvHash: cvHash,
-            govIdCid: govIdCid,
-            registeredAt: block.timestamp
+        freelancers[_walletAddress] = Freelancer({
+            walletAddress: _walletAddress,
+            displayName: _displayName,
+            profileCid: _profileCid,
+            cvHash: _cvHash,
+            govIdCid: _govIdCid,
+            isRegistered: true
         });
 
-        freelancerList.push(msg.sender);
+        freelancerAddresses.push(_walletAddress);
 
-        emit FreelancerRegistered(msg.sender, cvHash, profileCid, block.timestamp);
-        return true;
+        emit FreelancerRegistered(_walletAddress, _displayName, _profileCid);
     }
 
-    function updateFreelancer(string calldata displayName, string calldata profileCid, bytes32 cvHash, string calldata govIdCid) external onlyRegisteredFreelancer returns (bool) {
-        require(bytes(displayName).length > 0, "Display name cannot be empty");
-
-        Freelancer storage freelancer = freelancers[msg.sender];
-        freelancer.displayName = displayName;
-        freelancer.profileCid = profileCid;
-        freelancer.cvHash = cvHash;
-        freelancer.govIdCid = govIdCid;
-
-        emit FreelancerUpdated(msg.sender, cvHash, profileCid, block.timestamp);
-        return true;
+    function getFreelancer(address _walletAddress) public view returns (string memory, string memory, bytes32, string memory) {
+        return (
+            freelancers[_walletAddress].displayName,
+            freelancers[_walletAddress].profileCid,
+            freelancers[_walletAddress].cvHash,
+            freelancers[_walletAddress].govIdCid
+        );
     }
 
-    function getFreelancer(address owner) public view returns (Freelancer memory) {
-        return freelancers[owner];
-    }
-
-    function getFreelancerCount() public view returns (uint256) {
-        return freelancerList.length;
+    function isRegistered(address _walletAddress) public view returns (bool) {
+        return freelancers[_walletAddress].isRegistered;
     }
 }

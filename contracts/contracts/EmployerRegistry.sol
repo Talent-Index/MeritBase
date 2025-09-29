@@ -3,59 +3,48 @@ pragma solidity ^0.8.24;
 
 contract EmployerRegistry {
     struct Employer {
-        address owner;
+        address walletAddress;
         string companyName;
-        string contactEmail;
-        string licenseCid; // IPFS CID for the license document
-        uint256 registeredAt;
+        string workEmail;
+        string licenseCid; // IPFS CID for business license
+        bool isRegistered;
     }
 
     mapping(address => Employer) public employers;
-    address[] public employerList;
+    address[] public employerAddresses;
 
-    event EmployerRegistered(address indexed owner, string companyName, string licenseCid, uint256 ts);
-    event EmployerUpdated(address indexed owner, string companyName, string licenseCid, uint256 ts);
+    event EmployerRegistered(address indexed walletAddress, string companyName);
 
-    modifier onlyRegisteredEmployer() {
-        require(employers[msg.sender].owner != address(0), "Employer not registered");
-        _;
-    }
+    function registerEmployer(
+        address _walletAddress,
+        string memory _companyName,
+        string memory _workEmail,
+        string memory _licenseCid
+    ) public {
+        require(!employers[_walletAddress].isRegistered, "Employer already registered");
 
-    function registerEmployer(string calldata companyName, string calldata contactEmail, string calldata licenseCid) external returns (bool) {
-        require(bytes(companyName).length > 0, "Company name cannot be empty");
-        require(employers[msg.sender].owner == address(0), "Employer already registered");
-
-        employers[msg.sender] = Employer({
-            owner: msg.sender,
-            companyName: companyName,
-            contactEmail: contactEmail,
-            licenseCid: licenseCid,
-            registeredAt: block.timestamp
+        employers[_walletAddress] = Employer({
+            walletAddress: _walletAddress,
+            companyName: _companyName,
+            workEmail: _workEmail,
+            licenseCid: _licenseCid,
+            isRegistered: true
         });
         
-        employerList.push(msg.sender);
+        employerAddresses.push(_walletAddress);
 
-        emit EmployerRegistered(msg.sender, companyName, licenseCid, block.timestamp);
-        return true;
+        emit EmployerRegistered(_walletAddress, _companyName);
     }
 
-    function updateEmployer(string calldata companyName, string calldata contactEmail, string calldata licenseCid) external onlyRegisteredEmployer returns (bool) {
-        require(bytes(companyName).length > 0, "Company name cannot be empty");
-
-        Employer storage employer = employers[msg.sender];
-        employer.companyName = companyName;
-        employer.contactEmail = contactEmail;
-        employer.licenseCid = licenseCid;
-
-        emit EmployerUpdated(msg.sender, companyName, licenseCid, block.timestamp);
-        return true;
+    function getEmployer(address _walletAddress) public view returns (string memory, string memory, string memory) {
+        return (
+            employers[_walletAddress].companyName,
+            employers[_walletAddress].workEmail,
+            employers[_walletAddress].licenseCid
+        );
     }
-
-    function getEmployer(address owner) public view returns (Employer memory) {
-        return employers[owner];
-    }
-
-    function getEmployerCount() public view returns (uint256) {
-        return employerList.length;
+    
+    function isRegistered(address _walletAddress) public view returns (bool) {
+        return employers[_walletAddress].isRegistered;
     }
 }
