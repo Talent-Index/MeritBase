@@ -55,6 +55,19 @@ export const freelancers: Freelancer[] = [
       badges: ['Security Pro', 'Solidity Master'],
     },
   },
+   {
+    id: 'fl-3',
+    name: 'Charlie Brown',
+    title: 'Full-Stack Web3 Developer',
+    avatar: 'profile-3',
+    skills: ['React', 'Node.js', 'Solidity', 'PostgreSQL', 'Ethers.js'],
+    cvWallet: `Versatile Full-Stack Web3 Developer with 5 years of experience building decentralized applications from the ground up. I bridge the gap between user-facing interfaces and complex on-chain logic. My expertise covers creating responsive frontends with React, building scalable APIs with Node.js, and writing secure smart contracts in Solidity. I am adept at integrating with databases like PostgreSQL for off-chain data management.`,
+    reputation: {
+      rating: 4.8,
+      reviews: 19,
+      badges: ['Full-Stack Pro', 'Fast Learner'],
+    },
+  },
 ];
 
 export const employers: Employer[] = [
