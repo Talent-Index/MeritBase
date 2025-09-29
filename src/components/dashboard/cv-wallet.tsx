@@ -6,13 +6,13 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
-import { Bot, Check, Copy, Loader2, Save, Share2, Wallet } from 'lucide-react';
+import { Bot, Check, Copy, Loader2, Save, Share2 } from 'lucide-react';
 import { useEffect, useState } from 'react';
 import { useToast } from '@/hooks/use-toast';
-import { cn } from '@/lib/utils';
 import { freelancers } from '@/lib/data';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
 import { Input } from '@/components/ui/input';
+import { useAccount } from 'wagmi';
 
 function SubmitButton() {
   const { pending } = useFormStatus();
@@ -26,14 +26,19 @@ function SubmitButton() {
 
 export function CVWallet({ initialContent }: { initialContent: string }) {
   const { toast } = useToast();
+  const { isConnected } = useAccount();
   const [cvContent, setCvContent] = useState(initialContent);
-  const [walletAddress, setWalletAddress] = useState<string | null>(null);
-  const [isConnecting, setIsConnecting] = useState(false);
   const [copied, setCopied] = useState(false);
 
   // Assuming we're working with the first freelancer for this demo
   const freelancerId = freelancers[0].id;
-  const publicCvUrl = `${window.location.origin}/freelancer/${freelancerId}`;
+  const [publicCvUrl, setPublicCvUrl] = useState('');
+
+  useEffect(() => {
+    // This needs to be in a useEffect to access window.location.origin
+    setPublicCvUrl(`${window.location.origin}/freelancer/${freelancerId}`);
+  }, [freelancerId]);
+
 
   const initialState: FormState = { message: '' };
   const [state, formAction] = useFormState(generateCvWalletAction, initialState);
@@ -50,34 +55,6 @@ export function CVWallet({ initialContent }: { initialContent: string }) {
       setCvContent(state.cvContent);
     }
   }, [state, toast]);
-
-  const handleConnectWallet = async () => {
-    setIsConnecting(true);
-    try {
-      if ((window as any).ethereum) {
-        const accounts = await (window as any).ethereum.request({ method: 'eth_requestAccounts' });
-        if (accounts.length > 0) {
-            setWalletAddress(accounts[0]);
-             toast({
-                title: "Wallet Connected!",
-                description: `Connected with address: ${accounts[0].substring(0,6)}...${accounts[0].substring(accounts[0].length - 4)}`,
-            });
-        } else {
-            throw new Error("No accounts found.");
-        }
-      } else {
-        throw new Error("MetaMask not found. Please install the browser extension.");
-      }
-    } catch (error: any) {
-        toast({
-            variant: "destructive",
-            title: "Connection Failed",
-            description: error.message || "Could not connect to the wallet.",
-        });
-    } finally {
-        setIsConnecting(false);
-    }
-  }
   
   const handleCopy = () => {
     navigator.clipboard.writeText(publicCvUrl);
@@ -127,11 +104,6 @@ export function CVWallet({ initialContent }: { initialContent: string }) {
               <CardTitle className="font-headline">Your CVWallet</CardTitle>
               <CardDescription>This is your on-chain professional identity. Keep it updated to attract the best opportunities.</CardDescription>
             </div>
-             <Button variant={walletAddress ? "outline" : "primary"} onClick={handleConnectWallet} disabled={isConnecting}>
-                {isConnecting && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
-                <Wallet className="mr-2 h-4 w-4" />
-                {walletAddress ? `Connected: ${walletAddress.substring(0, 6)}...` : "Connect Wallet"}
-            </Button>
           </div>
         </CardHeader>
         <CardContent>
@@ -147,7 +119,7 @@ export function CVWallet({ initialContent }: { initialContent: string }) {
           </div>
         </CardContent>
         <CardFooter className="justify-between">
-            <Button variant="secondary" disabled={!walletAddress}>
+            <Button variant="secondary" disabled={!isConnected}>
                 <Save className="mr-2 h-4 w-4" />
                 Save & Sign to IPFS
             </Button>

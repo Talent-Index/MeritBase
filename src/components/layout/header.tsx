@@ -4,6 +4,7 @@ import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import { Menu } from "lucide-react";
 import { Logo } from "@/components/icons";
 import { ModeToggle } from "@/components/mode-toggle";
+import { ConnectButton } from "@/components/ConnectButton";
 
 export default function Header() {
   const navLinks = [
@@ -77,12 +78,7 @@ export default function Header() {
           </div>
           <nav className="flex items-center gap-2">
             <ModeToggle />
-            <Button variant="ghost" asChild>
-                <Link href="/dashboard-freelancer">Login</Link>
-            </Button>
-            <Button asChild className="bg-gradient-to-r from-purple-500 to-pink-500 text-white hover:opacity-90 transition-opacity">
-              <Link href="/signup-freelancer">Sign Up</Link>
-            </Button>
+            <ConnectButton />
           </nav>
         </div>
       </div>

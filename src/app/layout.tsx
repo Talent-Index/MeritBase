@@ -3,6 +3,7 @@ import './globals.css';
 import { cn } from '@/lib/utils';
 import { Toaster } from '@/components/ui/toaster';
 import { ThemeProvider } from '@/components/theme-provider';
+import { Web3Provider } from '@/web3/Web3Provider';
 
 export const metadata: Metadata = {
   title: 'MeritBase',
@@ -29,8 +30,10 @@ export default function RootLayout({
           enableSystem
           disableTransitionOnChange
         >
+          <Web3Provider>
             {children}
             <Toaster />
+          </Web3Provider>
         </ThemeProvider>
       </body>
     </html>
