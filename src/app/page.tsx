@@ -1,6 +1,6 @@
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { ArrowRight, Bot, ShieldCheck, Zap } from "lucide-react";
+import { ArrowRight, Bot, CodeXml, ShieldCheck, Zap } from "lucide-react";
 import Link from "next/link";
 import Header from "@/components/layout/header";
 import Footer from "@/components/layout/footer";
@@ -10,7 +10,7 @@ export default function Home() {
     <div className="flex flex-col min-h-screen">
       <Header />
       <main className="flex-1">
-        <section className="w-full py-20 md:py-32 lg:py-40 bg-card">
+        <section className="w-full py-20 md:py-32 lg:py-40 bg-card/50">
           <div className="container px-4 md:px-6">
             <div className="grid gap-6 lg:grid-cols-[1fr_400px] lg:gap-12 xl:grid-cols-[1fr_600px]">
               <div className="flex flex-col justify-center space-y-4">
@@ -36,15 +36,13 @@ export default function Home() {
                 </div>
               </div>
               <div className="flex items-center justify-center">
-                <div className="w-full max-w-md p-6 rounded-lg shadow-2xl bg-gradient-to-br from-primary/10 to-secondary/10">
-                    <div className="relative w-full h-64">
-                         <div className="absolute w-2/3 h-2/3 bg-primary/20 rounded-full -top-10 -left-10 animate-pulse"></div>
-                         <div className="absolute w-1/2 h-1/2 bg-accent/20 rounded-full -bottom-10 -right-10 animate-pulse delay-75"></div>
-                        <div className="absolute inset-0 flex items-center justify-center">
-                            <Bot className="w-32 h-32 text-primary" />
-                        </div>
+                <div className="relative w-full max-w-md p-6 rounded-lg shadow-2xl bg-gradient-to-br from-primary/10 to-secondary/10">
+                    <div className="absolute w-2/3 h-2/3 bg-primary/20 rounded-full -top-10 -left-10 animate-pulse"></div>
+                    <div className="absolute w-1/2 h-1/2 bg-accent/20 rounded-full -bottom-10 -right-10 animate-pulse delay-75"></div>
+                    <div className="absolute inset-0 flex flex-col items-center justify-center text-center transition-transform duration-500 hover:scale-105">
+                        <Bot className="w-32 h-32 text-primary drop-shadow-[0_0_15px_hsl(var(--primary)/0.5)]" />
+                        <p className="mt-4 text-muted-foreground font-semibold">AI-powered matching connecting you with the perfect opportunity.</p>
                     </div>
-                    <p className="mt-4 text-center text-muted-foreground">AI-powered matching connecting you with the perfect opportunity.</p>
                 </div>
               </div>
             </div>
@@ -63,7 +61,7 @@ export default function Home() {
               </div>
             </div>
             <div className="mx-auto grid max-w-5xl items-start gap-8 sm:grid-cols-2 md:gap-12 lg:grid-cols-3 mt-12">
-              <Card className="hover:shadow-lg transition-shadow">
+              <Card className="hover:shadow-lg transition-all duration-300 hover:-translate-y-2">
                 <CardHeader>
                   <div className="p-3 rounded-full bg-primary/10 inline-block mb-4">
                     <ShieldCheck className="h-8 w-8 text-primary" />
@@ -74,7 +72,7 @@ export default function Home() {
                   <p className="text-muted-foreground">Build your on-chain reputation. Your skills and work history are verified and stored securely on IPFS, giving employers confidence in your abilities.</p>
                 </CardContent>
               </Card>
-              <Card className="hover:shadow-lg transition-shadow">
+              <Card className="hover:shadow-lg transition-all duration-300 hover:-translate-y-2">
                 <CardHeader>
                   <div className="p-3 rounded-full bg-primary/10 inline-block mb-4">
                      <Zap className="h-8 w-8 text-primary" />
@@ -85,10 +83,10 @@ export default function Home() {
                   <p className="text-muted-foreground">Our intelligent matching engine analyzes job requirements and your CVWallet to find the perfect fit, saving you time and effort in your job search.</p>
                 </CardContent>
               </Card>
-               <Card className="hover:shadow-lg transition-shadow">
+               <Card className="hover:shadow-lg transition-all duration-300 hover:-translate-y-2">
                 <CardHeader>
                    <div className="p-3 rounded-full bg-primary/10 inline-block mb-4">
-                     <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-primary"><path d="M16.5 15.5L20 12l-3.5-3.5"/><path d="M7.5 8.5L4 12l3.5 3.5"/><path d="m14 18-4-12"/></svg>
+                     <CodeXml className="h-8 w-8 text-primary" />
                   </div>
                   <CardTitle className="font-headline">Decentralized & Transparent</CardTitle>
                 </CardHeader>

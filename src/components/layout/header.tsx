@@ -1,8 +1,9 @@
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
-import { Menu, Briefcase, Users } from "lucide-react";
+import { Menu } from "lucide-react";
 import { Logo } from "@/components/icons";
+import { ModeToggle } from "@/components/mode-toggle";
 
 export default function Header() {
   const navLinks = [
@@ -74,7 +75,8 @@ export default function Header() {
           <div className="w-full flex-1 md:w-auto md:flex-none">
             {/* Quick search can be added here */}
           </div>
-          <nav className="flex items-center">
+          <nav className="flex items-center gap-2">
+            <ModeToggle />
             <Button variant="ghost" asChild>
                 <Link href="/dashboard-freelancer">Login</Link>
             </Button>
