@@ -23,6 +23,12 @@ export function Header() {
               Features
             </Link>
             <Link
+              href="/memo"
+              className="transition-colors hover:text-foreground/80 text-foreground/60"
+            >
+              Memo Editor
+            </Link>
+            <Link
               href="/dashboard/employer"
               className="transition-colors hover:text-foreground/80 text-foreground/60"
             >
